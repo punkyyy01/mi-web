@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Frambuesa — Portfolio</title>
+  <style>
+    :root{--bg:#071127;--text:#e6eef8;--accent:#ff4d6d}
+    html,body{height:100%;margin:0}
+    body{font-family:Inter,Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),#061022);color:var(--text);display:flex;justify-content:center;padding:48px}
+    .container{max-width:900px;width:100%}
+    header{display:flex;align-items:center;gap:16px}
+    .avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#ff9aa2,var(--accent))}
+    h1{margin:0;font-size:28px}
+    .lead{margin:4px 0 8px;color:#cbd5e1}
+    nav a{margin-right:12px;color:var(--text);text-decoration:none;opacity:0.9}
+    .card{background:rgba(255,255,255,0.03);padding:16px;border-radius:10px;margin-top:16px}
+    footer{margin-top:20px;font-size:13px;color:#94a3b8}
+    a{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="avatar" aria-hidden="true"></div>
+      <div>
+        <h1>Frambuesa</h1>
+        <p class="lead">Diseñador / Desarrollador — creando cosas bonitas y útiles.</p>
+        <nav>
+          <a href="#about">Sobre mí</a>
+          <a href="#projects">Proyectos</a>
+          <a href="#contact">Contacto</a>
+        </nav>
+      </div>
+    </header>
+
+    <section id="about" class="card">
+      <h2>Sobre mí</h2>
+      <p>Soy Frambuesa — creando experiencias web limpias y accesibles. Este porfolio está en construcción.</p>
+    </section>
+
+    <section id="projects" class="card">
+      <h2>Proyectos</h2>
+      <ul>
+        <li>Proyecto 1 — descripción breve.</li>
+        <li>Proyecto 2 — descripción breve.</li>
+      </ul>
+    </section>
+
+    <section id="contact" class="card">
+      <h2>Contacto</h2>
+      <p>Email: <a href="mailto:frambuesa@example.com">frambuesa@example.com</a></p>
+    </section>
+
+    <footer>
+      <p>© <span id="year"></span> Frambuesa</p>
+    </footer>
+  </div>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
