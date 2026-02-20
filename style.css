@@ -49,13 +49,13 @@ body{
 
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:28px;margin-top:18px}
 .project{background:linear-gradient(120deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03));padding:0;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-height:260px;border:2px solid rgba(255,255,255,0.06);box-shadow:0 4px 24px 0 rgba(123,211,201,0.08);transition:transform .22s,box-shadow .22s;position:relative;}
-.project-media{height:110px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));}
+.project-media{height:110px;position:relative;overflow:hidden;border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));}
 
-/* Responsive image inside project media; hide large alt text visually but keep accessible name on container */
-.project-media img{width:100%;height:100%;object-fit:cover;display:block;border-radius:8px;font-size:0;line-height:0}
+/* Image fills the media area without affecting layout */
+.project-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;border-radius:0;-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .project-media--banner{height:160px}
 
-/* Provide accessible title when image is decorative */
+/* Keep a hidden accessible fallback text if needed */
 .project-media[aria-hidden="true"]{position:relative}
 .project-media[aria-hidden="true"] .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;border:0!important}
 .project-content{padding:20px 18px 18px 18px;flex:1;display:flex;flex-direction:column;}
