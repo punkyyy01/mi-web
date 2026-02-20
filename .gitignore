@@ -1,4 +1,13 @@
+/.venv/
+venv/
+__pycache__/
+*.py[cod]
 node_modules/
+dist/
+.env
+.DS_Store
+.vscode/
+*.lognode_modules/
 dist/
 .env
 .DS_Store
