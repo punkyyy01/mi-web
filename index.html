@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perfil - Frambuesa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Paleta Dark Pastel */
+      --bg: #1a1625;           /* Fondo principal súper oscuro */
+      --window: #2a2438;       /* Fondo de la tarjeta */
+      --header: #15111e;       /* Barra superior de la ventana */
+      --accent: #c8b6ff;       /* Lila pastel para bordes y títulos */
+      --text: #f0e6fa;         /* Texto claro casi blanco */
+      --text-muted: #b8a9c9;   /* Texto secundario */
+      --highlight: #ffcbf2;    /* Rosa pastel para botones y badges */
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      background-color: var(--bg);
+      background-image: 
+        linear-gradient(rgba(200, 182, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 182, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .window {
+      background: var(--window);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 950px;
+      box-shadow: 10px 10px 0px rgba(200, 182, 255, 0.2);
+      overflow: hidden;
+    }
+
+    .window-header {
+      background: var(--header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot { height: 14px; width: 14px; border-radius: 50%; }
+    .dot.red { background: #ff9b9b; }
+    .dot.yellow { background: #ffdf70; }
+    .dot.green { background: #9bf0a1; }
+    
+    .window-title {
+      margin-left: auto;
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .card-content {
+      display: flex;
+      gap: 30px;
+      padding: 30px;
+    }
+
+    .col { display: flex; flex-direction: column; gap: 20px; }
+    .left { width: 220px; }
+    .center { flex: 1; max-width: 450px; }
+    .right { width: 220px; }
+
+    img { width: 100%; height: auto; border-radius: 10px; object-fit: cover; }
+    
+    .avatar img { border: 3px solid var(--highlight); }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: -10px; }
+    .badge {
+      background: rgba(255, 203, 242, 0.15);
+      color: var(--highlight);
+      border: 1px solid var(--highlight);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h2, h3 { font-family: 'VT323', monospace; margin: 0; color: var(--accent); }
+    h2 { font-size: 38px; letter-spacing: 1px; text-align: center;}
+    h3 { font-size: 24px; border-bottom: 2px dashed var(--highlight); padding-bottom: 4px;}
+
+    ul { list-style: none; padding: 0; margin: 0; font-size: 14px; line-height: 1.6; }
+    .likes li::before { content: "✨ "; }
+    .dislikes li::before { content: "✖️ "; }
+
+    .profile-info {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 14px;
+    }
+    .profile-info p { margin: 5px 0; }
+    .profile-info strong { color: var(--highlight); }
+
+    .main-photo img { height: 300px; border: 2px solid var(--accent); }
+
+    .links { display: flex; flex-direction: column; gap: 10px; }
+    .link-btn {
+      display: block;
+      text-align: center;
+      background: transparent;
+      border: 2px solid var(--highlight);
+      color: var(--highlight);
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    .link-btn:hover {
+      background: var(--highlight);
+      color: var(--bg);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(255, 203, 242, 0.3);
+    }
+
+    .quote-box {
+      background: rgba(255, 203, 242, 0.1);
+      border: 1px solid var(--highlight);
+      color: var(--text);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 13px;
+    }
+
+    .footer { margin-top: 20px; font-family: 'VT323', monospace; color: var(--text-muted); font-size: 18px; }
+
+    @media (max-width: 850px) {
+      .card-content { flex-direction: column; align-items: center; }
+      .left, .right { width: 100%; max-width: 450px; }
+      .badges { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="window">
+    <header class="window-header">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <div class="window-title">perfil_frambuesa.exe</div>
+    </header>
+
+    <section class="card-content">
+      <aside class="col left">
+        <div class="avatar">
+          <img src="assets/avatar.jpg" alt="avatar">
+        </div>
+        <div class="badges">
+          <span class="badge">Bisexual</span>
+          <span class="badge">She/her</span>
+          <span class="badge">Acuario ♒</span>
+        </div>
+
+        <div>
+          <h3>Likes</h3>
+          <ul class="likes">
+            <li>Tocar piano</li>
+            <li>Dibujar</li>
+            <li>Programar</li>
+            <li>Jugar cositas (son muchas jeje)</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Dislikes</h3>
+          <ul class="dislikes">
+            <li>Homofobia / Transfobia</li>
+            <li>La palta 🥑</li>
+          </ul>
+        </div>
+      </aside>
+
+      <section class="col center">
+        <h2>꒰ Frambuesa ꒱</h2>
+        
+        <div class="profile-info">
+          <p><strong>User:</strong> @vs.8081</p>
+          <p><strong>Status:</strong> Online 🟢</p>
+        </div>
+
+        <div class="main-photo">
+          <img src="https://via.placeholder.com/450x300/15111e/ffcbf2?text=Main+Photo" alt="main photo">
+        </div>
+      </section>
+
+      <aside class="col right">
+        <h3>My Links!</h3>
+        <div class="links">
+          <a href="https://open.spotify.com/user/7xdcnnidyen2jhydlrfc0eyiz?si=8xcCRZoLRlmHTFdf1VIOqA" target="_blank" class="link-btn">Spotify</a>
+          <a href="https://github.com/punkyyy01" target="_blank" class="link-btn">GitHub</a>
+          <a href="https://steamcommunity.com/profiles/76561199472506595/" target="_blank" class="link-btn">Steam</a>
+        </div>
+
+        <div>
+          <img src="https://via.placeholder.com/220x150/15111e/c8b6ff?text=Mini+Photo" alt="side photo">
+        </div>
+
+        <div class="quote-box">
+          "Inserte frase profunda aquí... o simplemente 'no sé' 🤷‍♀️"
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer">
+    ( coded with ♥ )
+  </footer>
+
+</body>
+</html>
