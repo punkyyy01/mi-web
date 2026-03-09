@@ -1,234 +1,747 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfil - Frambuesa</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Frambuesa</title>
+  <meta name="description" content="Estudiante de Ingeniería en Informática, pianista desde los 12, y con demasiadas pestañas abiertas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Outfit:wght@300;400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      /* Paleta Dark Pastel */
-      --bg: #1a1625;           /* Fondo principal súper oscuro */
-      --window: #2a2438;       /* Fondo de la tarjeta */
-      --header: #15111e;       /* Barra superior de la ventana */
-      --accent: #c8b6ff;       /* Lila pastel para bordes y títulos */
-      --text: #f0e6fa;         /* Texto claro casi blanco */
-      --text-muted: #b8a9c9;   /* Texto secundario */
-      --highlight: #ffcbf2;    /* Rosa pastel para botones y badges */
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.85; }
     }
 
-    * { box-sizing: border-box; }
-    
-    body {
+    @keyframes float-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes blink {
+      0%, 48%, 52%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(120, 220, 140, 0.6); }
+      50% { box-shadow: 0 0 0 5px rgba(120, 220, 140, 0); }
+    }
+
+    @keyframes disc-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    :root {
+      --pink: #f5b8d0;
+      --pink-light: #fce4ec;
+      --pink-pale: #fff0f5;
+      --pink-deep: #e8879e;
+      --pink-bg: #fdd6e3;
+      --bg: #fce8ef;
+      --card: #fff5f8;
+      --border: #f0a6bf;
+      --border-soft: #f8c8d8;
+      --text: #5a3045;
+      --text-soft: #8e5c72;
+      --accent: #d4648a;
+      --white: #fffafc;
+      --green: #7edc8c;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Nunito', sans-serif;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "DM Mono", monospace;
       color: var(--text);
-      background-color: var(--bg);
-      background-image: 
-        linear-gradient(rgba(200, 182, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(200, 182, 255, 0.1) 1px, transparent 1px);
-      background-size: 20px 20px;
+      background: var(--bg);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      padding: 40px 20px;
+      justify-content: center;
+      padding: 32px 16px;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    .window {
-      background: var(--window);
-      border: 2px solid var(--accent);
-      border-radius: 12px;
-      width: 100%;
-      max-width: 950px;
-      box-shadow: 10px 10px 0px rgba(200, 182, 255, 0.2);
+    /* ── sparkle background ── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(1.5px 1.5px at 20px 30px, var(--pink-deep) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 60px 80px, var(--pink-deep) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 110px 45px, var(--pink-deep) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 160px 120px, var(--pink-deep) 50%, transparent 50%);
+      background-size: 180px 150px;
+      opacity: 0.25;
+    }
+
+    /* cross/plus pattern overlay like reference */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 12v4M12 14h4' stroke='%23e8879e' stroke-width='0.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size: 28px 28px;
+      opacity: 0.3;
+    }
+
+    /* ── main card ── */
+    .card-window {
+      position: relative;
+      z-index: 1;
+      width: min(780px, 100%);
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 16px;
       overflow: hidden;
+      box-shadow:
+        0 8px 32px rgba(216, 112, 147, 0.18),
+        0 2px 8px rgba(216, 112, 147, 0.1);
+      animation: float-in 600ms ease-out both;
     }
 
-    .window-header {
-      background: var(--header);
-      border-bottom: 2px solid var(--accent);
+    /* ── title bar ── */
+    .titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 10px 16px;
+      background: var(--pink-light);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .titlebar-left {
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-
-    .dot { height: 14px; width: 14px; border-radius: 50%; }
-    .dot.red { background: #ff9b9b; }
-    .dot.yellow { background: #ffdf70; }
-    .dot.green { background: #9bf0a1; }
-    
-    .window-title {
-      margin-left: auto;
-      font-family: 'VT323', monospace;
-      font-size: 20px;
-      color: var(--accent);
-      letter-spacing: 1px;
-    }
-
-    .card-content {
-      display: flex;
-      gap: 30px;
-      padding: 30px;
-    }
-
-    .col { display: flex; flex-direction: column; gap: 20px; }
-    .left { width: 220px; }
-    .center { flex: 1; max-width: 450px; }
-    .right { width: 220px; }
-
-    img { width: 100%; height: auto; border-radius: 10px; object-fit: cover; }
-    
-    .avatar img { border: 3px solid var(--highlight); }
-    .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: -10px; }
-    .badge {
-      background: rgba(255, 203, 242, 0.15);
-      color: var(--highlight);
-      border: 1px solid var(--highlight);
-      padding: 4px 10px;
-      border-radius: 20px;
+      font-family: "Silkscreen", monospace;
       font-size: 12px;
-      font-weight: 700;
+      color: var(--accent);
     }
 
-    h2, h3 { font-family: 'VT323', monospace; margin: 0; color: var(--accent); }
-    h2 { font-size: 38px; letter-spacing: 1px; text-align: center;}
-    h3 { font-size: 24px; border-bottom: 2px dashed var(--highlight); padding-bottom: 4px;}
-
-    ul { list-style: none; padding: 0; margin: 0; font-size: 14px; line-height: 1.6; }
-    .likes li::before { content: "✨ "; }
-    .dislikes li::before { content: "✖️ "; }
-
-    .profile-info {
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--accent);
-      border-radius: 10px;
-      padding: 15px;
-      font-size: 14px;
+    .titlebar-left svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--accent);
     }
-    .profile-info p { margin: 5px 0; }
-    .profile-info strong { color: var(--highlight); }
 
-    .main-photo img { height: 300px; border: 2px solid var(--accent); }
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
 
-    .links { display: flex; flex-direction: column; gap: 10px; }
-    .link-btn {
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(90, 48, 69, 0.15);
+    }
+
+    .dot-r { background: #ff8a9e; }
+    .dot-y { background: #ffd06b; }
+    .dot-g { background: #7edc8c; }
+
+    /* ── body layout ── */
+    .card-body {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 520px;
+    }
+
+    /* ── left column ── */
+    .left {
+      border-right: 2px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, var(--pink-pale) 0%, var(--card) 100%);
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border-bottom: 2px solid var(--border-soft);
+    }
+
+    .avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
       display: block;
-      text-align: center;
-      background: transparent;
-      border: 2px solid var(--highlight);
-      color: var(--highlight);
-      text-decoration: none;
-      padding: 8px;
-      border-radius: 25px;
-      font-weight: 600;
-      font-size: 14px;
-      transition: all 0.2s ease;
-    }
-    .link-btn:hover {
-      background: var(--highlight);
-      color: var(--bg);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(255, 203, 242, 0.3);
+      filter: grayscale(0.15) contrast(1.05);
     }
 
-    .quote-box {
-      background: rgba(255, 203, 242, 0.1);
-      border: 1px solid var(--highlight);
+    .avatar-wrap::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(to top, var(--pink-pale) 5%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .avatar-name {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      z-index: 1;
+    }
+
+    .avatar-name h1 {
+      font-family: "Silkscreen", monospace;
+      font-size: 24px;
       color: var(--text);
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: 600;
-      font-style: italic;
-      font-size: 13px;
+      line-height: 1;
+      text-shadow: 0 2px 8px rgba(255, 240, 245, 0.9);
     }
 
-    .footer { margin-top: 20px; font-family: 'VT323', monospace; color: var(--text-muted); font-size: 18px; }
+    .avatar-name p {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
 
-    @media (max-width: 850px) {
-      .card-content { flex-direction: column; align-items: center; }
-      .left, .right { width: 100%; max-width: 450px; }
-      .badges { justify-content: center; }
+    .identity-tags {
+      padding: 12px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      border-bottom: 1.5px dashed var(--border-soft);
+    }
+
+    .tag {
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--pink-light);
+      color: var(--accent);
+    }
+
+    .section-block {
+      padding: 12px 14px;
+      border-bottom: 1.5px dashed var(--border-soft);
+      animation: float-in 600ms ease-out both;
+    }
+
+    .section-block:nth-child(4) { animation-delay: 100ms; }
+    .section-block:nth-child(5) { animation-delay: 200ms; }
+
+    .lbl {
+      font-family: "Silkscreen", monospace;
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+
+    .section-block .val {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-soft);
+    }
+
+    .section-block .val span {
+      display: inline;
+    }
+
+    /* ── right column ── */
+    .right {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* hero area */
+    .hero {
+      padding: 20px 22px 16px;
+      border-bottom: 2px solid var(--border-soft);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      animation: float-in 600ms ease-out 80ms both;
+    }
+
+    .hero h2 {
+      font-family: "Silkscreen", monospace;
+      font-size: 28px;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .hero h2 span {
+      color: var(--pink-deep);
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-top: 6px;
+      max-width: 340px;
+      line-height: 1.5;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: "DM Mono", monospace;
+      font-size: 12px;
+      color: #3a7845;
+      background: #e6faec;
+      border: 1.5px solid #b2e6be;
+      border-radius: 999px;
+      padding: 5px 11px;
+      white-space: nowrap;
+    }
+
+    .status-pill .led {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--green);
+      animation: pulse-dot 1.8s infinite;
+    }
+
+    /* info table */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      border-bottom: 2px solid var(--border-soft);
+      animation: float-in 600ms ease-out 160ms both;
+    }
+
+    .info-grid .cell {
+      padding: 10px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+    }
+
+    .info-grid .cell:nth-last-child(-n+2) {
+      border-bottom: none;
+    }
+
+    .info-grid .cell.key {
+      font-family: "Silkscreen", monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(252, 228, 236, 0.5);
+      border-right: 1.5px solid var(--border-soft);
+    }
+
+    .info-grid .cell.value {
+      color: var(--text-soft);
+      line-height: 1.55;
+    }
+
+    .bio-cell {
+      align-items: flex-start !important;
+      padding-top: 12px !important;
+      padding-bottom: 14px !important;
+      min-height: 80px;
+    }
+
+    /* content area */
+    .bottom-area {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 0;
+    }
+
+    .photos-area {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      border-right: 1.5px solid var(--border-soft);
+      animation: float-in 600ms ease-out 240ms both;
+    }
+
+    .photos-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .photo-frame {
+      border-radius: 10px;
+      border: 2px solid var(--border-soft);
+      overflow: hidden;
+      background: var(--pink-light);
+      aspect-ratio: 2 / 3;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-frame:first-child img {
+      object-position: center 30%;
+    }
+
+    .photo-frame:last-child img {
+      object-position: center 22%;
+    }
+
+    /* sidebar stack */
+    .sidebar-stack {
+      display: flex;
+      flex-direction: column;
+      animation: float-in 600ms ease-out 300ms both;
+    }
+
+    .mini-section {
+      padding: 12px 14px;
+      border-bottom: 1.5px dashed var(--border-soft);
+    }
+
+    /* now playing */
+    .now-playing-box {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 8px;
+      padding: 9px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--pink-light);
+    }
+
+    .disc {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 2px solid var(--pink-deep);
+      background: conic-gradient(var(--pink-light), var(--pink), var(--pink-light));
+      flex-shrink: 0;
+      animation: disc-spin 4s linear infinite;
+      position: relative;
+    }
+
+    .disc::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: 999px;
+      background: var(--pink-deep);
+    }
+
+    .song-info {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .song-info b {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-info span {
+      display: block;
+      font-size: 11px;
+      color: var(--text-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* links */
+    .link-list {
+      display: grid;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .link-list a {
+      text-decoration: none;
+      font-family: "DM Mono", monospace;
+      font-size: 12px;
+      color: var(--text);
+      padding: 6px 10px;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 8px;
+      background: var(--pink-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 150ms, border-color 150ms, transform 150ms;
+    }
+
+    .link-list a:hover {
+      background: var(--pink-bg);
+      border-color: var(--border);
+      transform: translateY(-1px);
+    }
+
+    .link-list a .num {
+      font-family: "Silkscreen", monospace;
+      font-size: 10px;
+      color: var(--pink-deep);
+      width: 16px;
+    }
+
+    /* mood */
+    .mood-bar {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-top: 1.5px dashed var(--border-soft);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .mood-bar .kaomoji {
+      display: block;
+      font-size: 14px;
+      margin-top: 4px;
+      color: var(--accent);
+    }
+
+    /* ── footer ── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      font-family: "DM Mono", monospace;
+      font-size: 12px;
+      color: var(--text-soft);
+      opacity: 0.6;
+      animation: float-in 700ms ease-out 500ms both;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* kaomoji decoration */
+    .kao-deco {
+      text-align: center;
+      padding: 8px 14px;
+      font-size: 13px;
+      color: var(--pink-deep);
+      letter-spacing: 2px;
+      border-bottom: 1.5px dashed var(--border-soft);
+    }
+
+    /* ── responsive ── */
+    @media (max-width: 780px) {
+      .card-body {
+        grid-template-columns: 1fr;
+      }
+
+      .left {
+        border-right: none;
+        border-bottom: 2px solid var(--border-soft);
+      }
+
+      .avatar-wrap {
+        aspect-ratio: 16 / 10;
+      }
+
+      .bottom-area {
+        grid-template-columns: 1fr;
+      }
+
+      .photos-area {
+        border-right: none;
+        border-bottom: 1.5px solid var(--border-soft);
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px 8px;
+      }
+
+      .hero h2 {
+        font-size: 22px;
+      }
+
+      .info-grid {
+        grid-template-columns: 76px 1fr;
+      }
+
+      .photos-area {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
-  <main class="window">
-    <header class="window-header">
-      <div class="dot red"></div>
-      <div class="dot yellow"></div>
-      <div class="dot green"></div>
-      <div class="window-title">perfil_frambuesa.exe</div>
+  <main class="card-window">
+
+    <!-- title bar -->
+    <header class="titlebar">
+      <div class="titlebar-left">
+        <svg viewBox="0 0 16 16"><rect x="1" y="3" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M4 1v3M8 1v3M12 1v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Marzo 2026</span>
+      </div>
+      <div class="dots">
+        <span class="dot dot-r"></span>
+        <span class="dot dot-y"></span>
+        <span class="dot dot-g"></span>
+      </div>
     </header>
 
-    <section class="card-content">
-      <aside class="col left">
-        <div class="avatar">
-          <img src="assets/avatar.jpg" alt="avatar">
-        </div>
-        <div class="badges">
-          <span class="badge">Bisexual</span>
-          <span class="badge">She/her</span>
-          <span class="badge">Acuario ♒</span>
+    <div class="card-body">
+
+      <!-- ── left sidebar ── -->
+      <div class="left">
+        <div class="avatar-wrap">
+          <img src="assets/avatar.jpg" alt="Frambuesa" loading="eager">
+          <div class="avatar-name">
+            <h1>Frambuesa</h1>
+            <p>@vs.8081</p>
+          </div>
         </div>
 
-        <div>
-          <h3>Likes</h3>
-          <ul class="likes">
-            <li>Tocar piano</li>
-            <li>Dibujar</li>
-            <li>Programar</li>
-            <li>Jugar cositas (son muchas jeje)</li>
-          </ul>
+        <div class="identity-tags">
+          <span class="tag">Bisexual</span>
+          <span class="tag">She / Her</span>
+          <span class="tag">Acuario</span>
+          <span class="tag">21</span>
         </div>
 
-        <div>
-          <h3>Dislikes</h3>
-          <ul class="dislikes">
-            <li>Homofobia / Transfobia</li>
-            <li>La palta 🥑</li>
-          </ul>
-        </div>
-      </aside>
-
-      <section class="col center">
-        <h2>꒰ Frambuesa ꒱</h2>
-        
-        <div class="profile-info">
-          <p><strong>User:</strong> @vs.8081</p>
-          <p><strong>Status:</strong> Online 🟢</p>
+        <div class="section-block">
+          <p class="lbl">Likes</p>
+          <p class="val">Pierce the Veil, Sophie Thatcher, tocar piano a las 2am, true crime, dormir, dibujar y programar.</p>
         </div>
 
-        <div class="main-photo">
-          <img src="https://via.placeholder.com/450x300/15111e/ffcbf2?text=Main+Photo" alt="main photo">
-        </div>
-      </section>
-
-      <aside class="col right">
-        <h3>My Links!</h3>
-        <div class="links">
-          <a href="https://open.spotify.com/user/7xdcnnidyen2jhydlrfc0eyiz?si=8xcCRZoLRlmHTFdf1VIOqA" target="_blank" class="link-btn">Spotify</a>
-          <a href="https://github.com/punkyyy01" target="_blank" class="link-btn">GitHub</a>
-          <a href="https://steamcommunity.com/profiles/76561199472506595/" target="_blank" class="link-btn">Steam</a>
+        <div class="section-block">
+          <p class="lbl">Dislikes</p>
+          <p class="val">La palta, madrugar, el calor, ruido innecesario, homofobia y transfobia.</p>
         </div>
 
-        <div>
-          <img src="https://via.placeholder.com/220x150/15111e/c8b6ff?text=Mini+Photo" alt="side photo">
+        <div class="kao-deco">. ⁺ ✧ ─ ⊹ ─ ✧ ⁺ .</div>
+      </div>
+
+      <!-- ── right main ── -->
+      <div class="right">
+
+        <div class="hero">
+          <div>
+            <h2><span>♡</span> Frambuesa<span>!</span></h2>
+            <p class="hero-sub">Ing. informática :3.</p>
+          </div>
+          <div class="status-pill">
+            <span class="led"></span>
+            Online
+          </div>
         </div>
 
-        <div class="quote-box">
-          "Inserte frase profunda aquí... o simplemente 'no sé' 🤷‍♀️"
+        <div class="info-grid">
+          <div class="cell key">User</div>
+          <div class="cell value">@vs.8081</div>
+
+          <div class="cell key">Status</div>
+          <div class="cell value">probablemente con 40 pestañas abiertas.</div>
+
+          <div class="cell key">Lugar</div>
+          <div class="cell value">Santiago, Chile 🇨🇱</div>
+
+          <div class="cell key bio-cell">Bio</div>
+          <div class="cell value bio-cell">Toco piano, dibujo cuando me da la gana, y estudio informática.</div>
         </div>
-      </aside>
-    </section>
+
+        <div class="bottom-area">
+
+          <!-- photos -->
+          <div class="photos-area">
+            <div class="photos-row">
+              <figure class="photo-frame">
+                <img src="assets/a6464def-9da2-4d0e-a523-ae6d841dd4ca.jpg" alt="Frambuesa selfie" loading="lazy">
+              </figure>
+              <figure class="photo-frame">
+                <img src="assets/IMG_9843.png" alt="Frambuesa retrato" loading="lazy">
+              </figure>
+            </div>
+          </div>
+
+          <!-- sidebar stack -->
+          <div class="sidebar-stack">
+
+            <div class="mini-section">
+              <p class="lbl">Now Playing</p>
+              <div class="now-playing-box">
+                <span class="disc"></span>
+                <div class="song-info">
+                  <b>Hell Above</b>
+                  <span>Pierce the Veil</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mini-section">
+              <p class="lbl">Links</p>
+              <div class="link-list">
+                <a href="https://open.spotify.com/user/7xdcnnidyen2jhydlrfc0eyiz?si=8xcCRZoLRlmHTFdf1VIOqA" target="_blank" rel="noopener"><span class="num">1</span> spotify</a>
+                <a href="https://github.com/punkyyy01" target="_blank" rel="noopener"><span class="num">2</span> github</a>
+                <a href="https://steamcommunity.com/profiles/76561199472506595/" target="_blank" rel="noopener"><span class="num">3</span> steam</a>
+                <a href="https://www.tiktok.com/@another.soapy.t" target="_blank" rel="noopener"><span class="num">4</span> tiktok</a>
+                <a href="https://www.instagram.com/another.soapy.t/" target="_blank" rel="noopener"><span class="num">5</span> instagram</a>
+              </div>
+            </div>
+
+            <div class="mini-section">
+              <p class="lbl">Gaming</p>
+              <p class="val" style="font-size:12px; margin-top:4px;">Arma Reforger, Insurgency, BF1 (2, 4, 2042), PvZ:GW2</p>
+            </div>
+
+            <div class="mood-bar">
+              current mood: debería estar durmiendo
+              <span class="kaomoji">( ᵕ̩̩ ᵕ̩̩ )</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
   </main>
 
-  <footer class="footer">
-    ( coded with ♥ )
-  </footer>
+  <footer class="footer">( coded with love by <a href="#">frambuesa</a> )</footer>
 
 </body>
 </html>
