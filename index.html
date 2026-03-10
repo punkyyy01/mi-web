@@ -561,6 +561,12 @@
 
 <script>
 /* ═══════════════════════════════════════════════
+   SCROLL RESTORATION — always start from top on reload
+   ═══════════════════════════════════════════════ */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
+/* ═══════════════════════════════════════════════
    UTILITIES
    ═══════════════════════════════════════════════ */
 let MX=0,MY=0;
