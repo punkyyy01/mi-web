@@ -1,747 +1,602 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Frambuesa</title>
   <meta name="description" content="Estudiante de Ingeniería en Informática, pianista desde los 12, y con demasiadas pestañas abiertas.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Outfit:wght@300;400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles-engine@2/tsparticles.engine.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2/tsparticles.slim.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <style>
-    @keyframes sparkle {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.85; }
-    }
+    /* ═══ KEYFRAMES ═══ */
+    @keyframes blink-cursor { 0%,48%,52%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 0 rgba(139,0,0,.7)} 50%{box-shadow:0 0 0 7px rgba(139,0,0,0)} }
+    @keyframes gradient-border { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    @keyframes scanline-move { 0%{top:-10%} 100%{top:110%} }
+    @keyframes float-slow { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    @keyframes breathe { 0%,100%{opacity:.3} 50%{opacity:.85} }
+    @keyframes bar-dance { 0%,100%{height:3px} 50%{height:var(--bar-h)} }
+    @keyframes blood-drip { 0%{height:0;opacity:.8} 70%{opacity:.8} 100%{height:var(--drip-h);opacity:0} }
+    @keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1} 20%,24%,55%{opacity:.4} }
+    @keyframes heartbeat { 0%,100%{transform:scale(1)} 14%{transform:scale(1.15)} 28%{transform:scale(1)} 42%{transform:scale(1.08)} 56%{transform:scale(1)} }
+    @keyframes chromatic-shift { 0%,100%{text-shadow:-1px 0 #ff003c,1px 0 #8b0000} 25%{text-shadow:-2px 0 #ff003c,2px 0 #6b0000} 50%{text-shadow:0 0 transparent,0 0 transparent} 75%{text-shadow:1px 0 #ff003c,-1px 0 #8b0000} }
+    @keyframes glitch-1 { 0%{clip-path:inset(15% 0 35% 0);transform:translate(3px,-2px) skewX(-2deg)} 50%{clip-path:inset(55% 0 5% 0);transform:translate(-3px,2px) skewX(2deg)} 100%{clip-path:inset(15% 0 35% 0);transform:translate(3px,-2px) skewX(-2deg)} }
+    @keyframes glitch-2 { 0%{clip-path:inset(50% 0 20% 0);transform:translate(-3px,1px) skewX(1deg)} 50%{clip-path:inset(10% 0 60% 0);transform:translate(3px,-1px) skewX(-1deg)} 100%{clip-path:inset(50% 0 20% 0);transform:translate(-3px,1px) skewX(1deg)} }
 
-    @keyframes float-in {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes blink {
-      0%, 48%, 52%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    @keyframes pulse-dot {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(120, 220, 140, 0.6); }
-      50% { box-shadow: 0 0 0 5px rgba(120, 220, 140, 0); }
-    }
-
-    @keyframes disc-spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    :root {
-      --pink: #f5b8d0;
-      --pink-light: #fce4ec;
-      --pink-pale: #fff0f5;
-      --pink-deep: #e8879e;
-      --pink-bg: #fdd6e3;
-      --bg: #fce8ef;
-      --card: #fff5f8;
-      --border: #f0a6bf;
-      --border-soft: #f8c8d8;
-      --text: #5a3045;
-      --text-soft: #8e5c72;
-      --accent: #d4648a;
-      --white: #fffafc;
-      --green: #7edc8c;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    /* ═══ RESET ═══ */
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
 
     body {
-      font-family: "DM Mono", monospace;
-      color: var(--text);
-      background: var(--bg);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
-      position: relative;
-      overflow-x: hidden;
+      --accent:#8b0000; --accent-bright:#ff003c; --accent-dim:#5a1a2e;
+      --bg:#080608; --card:#0e0b0d; --card-alt:#150f14;
+      --border:#4a1a2e; --border-soft:#251520;
+      --text:#d4c4cc; --text-soft:#7a6070;
+      font-family:"DM Mono",monospace; color:var(--text);
+      background:var(--bg); min-height:100vh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:28px 16px; position:relative; overflow-x:hidden;
     }
 
-    /* ── sparkle background ── */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image:
-        radial-gradient(1.5px 1.5px at 20px 30px, var(--pink-deep) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 60px 80px, var(--pink-deep) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 110px 45px, var(--pink-deep) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 160px 120px, var(--pink-deep) 50%, transparent 50%);
-      background-size: 180px 150px;
-      opacity: 0.25;
+    /* ═══ BACKGROUND LAYERS (all GPU-composited) ═══ */
+    #tsparticles { position:fixed; inset:0; z-index:0; }
+
+    /* Aurora renders at HALF resolution for perf */
+    #aurora {
+      position:fixed; inset:0; z-index:0; pointer-events:none;
+      opacity:.4; image-rendering:auto;
+      /* Scaled up via CSS from half-res canvas */
+      width:100%; height:100%;
     }
 
-    /* cross/plus pattern overlay like reference */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 12v4M12 14h4' stroke='%23e8879e' stroke-width='0.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-size: 28px 28px;
-      opacity: 0.3;
+    /* Three.js also at reduced resolution */
+    #three-canvas {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      z-index:0; pointer-events:none; opacity:.1;
     }
 
-    /* ── main card ── */
+    /* VHS noise — static image, GPU-composited */
+    .vhs-overlay {
+      position:fixed; inset:0; z-index:998; pointer-events:none;
+      will-change: transform; /* force GPU layer */
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      background-size:200px 200px; opacity:.25;
+      animation: none; /* removed continuous animation — static noise is fine */
+    }
+
+    .scanlines {
+      position:fixed; inset:0; z-index:999; pointer-events:none;
+      will-change: transform;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);
+    }
+
+    .cross-pattern {
+      position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 12v4M12 14h4' stroke='%238b0000' stroke-width='0.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size:28px 28px; opacity:.1;
+    }
+
+    /* ═══ BORDER GLOW ═══ */
+    .border-glow {
+      position:relative; z-index:1; width:min(850px,100%);
+      padding:2px; border-radius:16px;
+      background:linear-gradient(135deg,#8b0000,#2a0a1a,#ff003c,#1a0810,#8b0000);
+      background-size:400% 400%; animation:gradient-border 5s ease infinite; opacity:0;
+    }
+
+    /* ═══ CARD ═══ */
     .card-window {
-      position: relative;
-      z-index: 1;
-      width: min(780px, 100%);
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow:
-        0 8px 32px rgba(216, 112, 147, 0.18),
-        0 2px 8px rgba(216, 112, 147, 0.1);
-      animation: float-in 600ms ease-out both;
+      background:var(--card); border-radius:14px; overflow:hidden; position:relative;
+      box-shadow:0 0 60px rgba(139,0,0,.15),0 0 120px rgba(139,0,0,.05),0 4px 16px rgba(0,0,0,.6);
     }
 
-    /* ── title bar ── */
+    .blood-drips { position:absolute; top:0; left:0; right:0; height:0; z-index:3; pointer-events:none; }
+    .drip {
+      position:absolute; top:0; width:3px;
+      background:linear-gradient(to bottom,#8b0000,#4a0000 70%,transparent);
+      border-radius:0 0 3px 3px; animation:blood-drip 4s ease-in infinite;
+    }
+
     .titlebar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      background: var(--pink-light);
-      border-bottom: 2px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 16px; background:var(--card-alt);
+      border-bottom:2px solid var(--border-soft);
     }
+    .titlebar-left { display:flex; align-items:center; gap:8px; font-family:"Silkscreen",monospace; font-size:12px; color:var(--accent); }
+    .titlebar .clock { color:var(--text-soft); font-family:"DM Mono",monospace; font-size:10px; margin-left:8px; animation:flicker 3s infinite; }
+    .dots { display:flex; gap:6px; }
+    .dot { width:12px; height:12px; border-radius:999px; border:1.5px solid rgba(200,180,190,.08); transition:transform .2s,filter .2s,box-shadow .2s; }
+    .dot:hover { transform:scale(1.4); filter:brightness(1.5); box-shadow:0 0 10px currentColor; }
+    .dot-r { background:#8b0000; color:#8b0000; }
+    .dot-y { background:#6b3a00; color:#6b3a00; }
+    .dot-g { background:#4a0028; color:#4a0028; }
 
-    .titlebar-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: "Silkscreen", monospace;
-      font-size: 12px;
-      color: var(--accent);
+    .card-body { display:grid; grid-template-columns:228px 1fr; min-height:520px; }
+
+    /* LEFT */
+    .left { border-right:2px solid var(--border-soft); display:flex; flex-direction:column; background:linear-gradient(180deg,rgba(14,8,12,1),var(--card)); }
+    .avatar-wrap { position:relative; width:100%; aspect-ratio:4/5; overflow:hidden; border-bottom:2px solid var(--border-soft); }
+    .avatar-wrap img { width:100%; height:100%; object-fit:cover; object-position:center top; display:block; filter:grayscale(.65) contrast(1.2) brightness(.75); transition:filter .5s,transform .5s; }
+    .avatar-wrap:hover img { filter:grayscale(.15) contrast(1.1) brightness(.85) saturate(1.2); transform:scale(1.05); }
+    .avatar-wrap::after { content:""; position:absolute; bottom:0; left:0; right:0; height:65%; background:linear-gradient(to top,var(--card) 8%,transparent 100%); pointer-events:none; }
+    .avatar-wrap::before { content:""; position:absolute; inset:0; z-index:1; background:radial-gradient(ellipse at center,transparent 40%,rgba(139,0,0,.1) 100%); pointer-events:none; }
+    .avatar-scanline { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:2; }
+    .avatar-scanline::before { content:""; position:absolute; left:0; right:0; height:40px; background:linear-gradient(to bottom,transparent,rgba(139,0,0,.08),transparent); animation:scanline-move 2.5s linear infinite; }
+    .avatar-name { position:absolute; bottom:12px; left:14px; z-index:4; }
+    .avatar-name h1 { font-family:"Silkscreen",monospace; font-size:22px; color:var(--text); line-height:1; text-shadow:0 2px 16px rgba(0,0,0,.95),0 0 30px rgba(139,0,0,.3); }
+    .avatar-name p { font-size:11px; color:var(--text-soft); margin-top:3px; }
+
+    .glitch { position:relative; font-family:"Silkscreen",monospace; display:inline-block; }
+    .glitch::before,.glitch::after { content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; pointer-events:none; }
+    .glitch::before { color:var(--accent-bright); }
+    .glitch::after { color:var(--accent-dim); }
+    .glitch.active::before { opacity:.9; animation:glitch-1 150ms steps(2) 1; }
+    .glitch.active::after { opacity:.9; animation:glitch-2 150ms steps(2) 1; }
+
+    .identity-tags { padding:12px 14px; display:flex; flex-wrap:wrap; gap:6px; border-bottom:1.5px dashed var(--border-soft); }
+    .tag { font-family:"DM Mono",monospace; font-size:11px; padding:3px 10px; border-radius:999px; border:1.5px solid var(--border); background:var(--card-alt); color:var(--accent); cursor:default; transition:all .3s; opacity:0; transform:translateY(8px); }
+    .tag:hover { transform:scale(1.12) translateY(-2px) !important; border-color:var(--accent-bright); background:rgba(139,0,0,.2); box-shadow:0 0 12px rgba(139,0,0,.3); color:var(--accent-bright); }
+    .section-block { padding:12px 14px; border-bottom:1.5px dashed var(--border-soft); opacity:0; transform:translateY(12px); }
+    .lbl { font-family:"Silkscreen",monospace; font-size:12px; color:var(--accent); margin-bottom:5px; }
+    .val { font-size:12px; line-height:1.6; color:var(--text-soft); }
+    .kao-deco { text-align:center; padding:10px 14px; font-size:13px; color:var(--accent); letter-spacing:3px; animation:breathe 3s ease-in-out infinite; }
+
+    /* RIGHT */
+    .right { display:flex; flex-direction:column; }
+    .hero { padding:20px 22px 16px; border-bottom:2px solid var(--border-soft); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; opacity:0; transform:translateY(16px); }
+    .hero h2 { font-family:"Silkscreen",monospace; font-size:28px; color:var(--text); line-height:1; display:flex; align-items:center; gap:8px; }
+    .hero h2 .heart { display:inline-block; animation:heartbeat 2s ease-in-out infinite; color:var(--accent-bright); filter:drop-shadow(0 0 8px rgba(255,0,60,.5)); }
+    .hero h2 .name-main { animation:chromatic-shift 4s ease infinite; }
+    .hero-sub { font-size:13px; color:var(--text-soft); margin-top:6px; line-height:1.5; }
+    .hero-sub .cursor { animation:blink-cursor 1s step-end infinite; color:var(--accent); }
+    .status-pill { display:inline-flex; align-items:center; gap:7px; font-family:"DM Mono",monospace; font-size:12px; color:var(--accent); background:rgba(139,0,0,.08); border:1.5px solid #3a1515; border-radius:999px; padding:5px 12px; white-space:nowrap; animation:flicker 5s infinite; }
+    .status-pill .led { width:7px; height:7px; border-radius:999px; background:var(--accent); animation:pulse-dot 1.5s infinite; }
+
+    .info-grid { display:grid; grid-template-columns:88px 1fr; border-bottom:2px solid var(--border-soft); opacity:0; transform:translateY(12px); }
+    .info-grid .cell { padding:10px 14px; font-size:13px; border-bottom:1px solid var(--border-soft); display:flex; align-items:center; }
+    .info-grid .cell:nth-last-child(-n+2) { border-bottom:none; }
+    .info-grid .cell.key { font-family:"Silkscreen",monospace; font-size:11px; color:var(--accent); background:rgba(139,0,0,.04); border-right:1.5px solid var(--border-soft); }
+    .info-grid .cell.value { color:var(--text-soft); line-height:1.55; }
+    .bio-cell { align-items:flex-start !important; padding-top:12px !important; padding-bottom:14px !important; min-height:70px; }
+
+    .bottom-area { flex:1; display:grid; grid-template-columns:1fr 200px; }
+    .photos-area { padding:14px; display:flex; flex-direction:column; justify-content:center; gap:10px; border-right:1.5px solid var(--border-soft); opacity:0; transform:translateY(12px); }
+    .photos-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .photo-frame { border-radius:10px; border:2px solid var(--border-soft); overflow:hidden; background:var(--card-alt); aspect-ratio:2/3; margin:0; position:relative; transition:border-color .3s,box-shadow .4s; will-change:transform; }
+    .photo-frame:hover { border-color:var(--accent); box-shadow:0 0 25px rgba(139,0,0,.25),inset 0 0 30px rgba(139,0,0,.08); }
+    .photo-frame .glow-overlay { position:absolute; inset:0; pointer-events:none; z-index:2; opacity:0; transition:opacity .25s; border-radius:8px; }
+    .photo-frame:hover .glow-overlay { opacity:1; }
+    .photo-frame img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s,filter .5s; filter:grayscale(.3) brightness(.85); }
+    .photo-frame:first-child img { object-position:center 30%; }
+    .photo-frame:last-child img { object-position:center 22%; }
+    .photo-frame:hover img { transform:scale(1.08); filter:grayscale(0) brightness(1) saturate(1.1); }
+
+    .sidebar-stack { display:flex; flex-direction:column; opacity:0; transform:translateY(12px); }
+    .mini-section { padding:12px 14px; border-bottom:1.5px dashed var(--border-soft); }
+    .now-playing-box { display:flex; align-items:center; gap:10px; margin-top:8px; padding:10px 11px; border:1.5px solid var(--border); border-radius:10px; background:var(--card-alt); transition:border-color .3s,box-shadow .3s; will-change:transform; position:relative; overflow:hidden; }
+    .now-playing-box:hover { border-color:var(--accent); box-shadow:0 0 20px rgba(139,0,0,.2); }
+    .now-playing-box::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 20% 50%,rgba(139,0,0,.12),transparent 70%); opacity:0; transition:opacity .3s; }
+    .now-playing-box:hover::before { opacity:1; }
+    .audio-bars { display:flex; align-items:flex-end; gap:2px; height:22px; flex-shrink:0; position:relative; z-index:1; }
+    .audio-bars .bar { width:3px; background:linear-gradient(to top,#8b0000,#ff003c); border-radius:1px; animation:bar-dance .6s ease-in-out infinite alternate; }
+    .song-info { min-width:0; flex:1; position:relative; z-index:1; }
+    .song-info b { display:block; font-size:12px; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .song-info span { display:block; font-size:11px; color:var(--text-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    .link-list { display:grid; gap:4px; margin-top:8px; }
+    .link-list a { text-decoration:none; font-family:"DM Mono",monospace; font-size:12px; color:var(--text-soft); padding:7px 10px; border:1.5px solid var(--border-soft); border-radius:8px; background:var(--card-alt); display:flex; align-items:center; gap:6px; transition:all .3s; opacity:0; transform:translateX(-8px); position:relative; overflow:hidden; }
+    .link-list a::before { content:""; position:absolute; top:0; left:0; width:0; height:100%; background:linear-gradient(90deg,rgba(139,0,0,.15),transparent); transition:width .3s; }
+    .link-list a:hover::before { width:100%; }
+    .link-list a:hover { background:rgba(139,0,0,.1); border-color:var(--accent); color:var(--text); transform:translateX(6px) !important; box-shadow:0 0 12px rgba(139,0,0,.15); }
+    .link-list a .num { font-family:"Silkscreen",monospace; font-size:10px; color:var(--accent); width:16px; position:relative; z-index:1; }
+    .link-list a .lt { position:relative; z-index:1; }
+    .link-list a .arrow { margin-left:auto; font-size:10px; color:var(--accent-bright); opacity:0; transition:opacity .2s,transform .2s; position:relative; z-index:1; }
+    .link-list a:hover .arrow { opacity:1; transform:translateX(3px); }
+
+    .mood-bar { padding:12px 14px; text-align:center; font-size:12px; color:var(--text-soft); }
+    .mood-bar .kaomoji { display:block; font-size:14px; margin-top:4px; color:var(--accent); animation:float-slow 3.5s ease-in-out infinite; }
+    .gaming-section .val { margin-top:4px; }
+
+    .footer { position:relative; z-index:1; margin-top:14px; font-family:"DM Mono",monospace; font-size:12px; color:var(--text-soft); opacity:0; }
+    .footer a { color:var(--accent); text-decoration:none; }
+    .footer a:hover { color:var(--accent-bright); text-shadow:0 0 8px rgba(139,0,0,.5); }
+
+    @media(max-width:780px) {
+      .card-body { grid-template-columns:1fr; }
+      .left { border-right:none; border-bottom:2px solid var(--border-soft); }
+      .avatar-wrap { aspect-ratio:16/10; }
+      .bottom-area { grid-template-columns:1fr; }
+      .photos-area { border-right:none; border-bottom:1.5px solid var(--border-soft); }
     }
-
-    .titlebar-left svg {
-      width: 14px;
-      height: 14px;
-      fill: var(--accent);
-    }
-
-    .dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      border: 1.5px solid rgba(90, 48, 69, 0.15);
-    }
-
-    .dot-r { background: #ff8a9e; }
-    .dot-y { background: #ffd06b; }
-    .dot-g { background: #7edc8c; }
-
-    /* ── body layout ── */
-    .card-body {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      min-height: 520px;
-    }
-
-    /* ── left column ── */
-    .left {
-      border-right: 2px solid var(--border-soft);
-      display: flex;
-      flex-direction: column;
-      background: linear-gradient(180deg, var(--pink-pale) 0%, var(--card) 100%);
-    }
-
-    .avatar-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4 / 5;
-      overflow: hidden;
-      border-bottom: 2px solid var(--border-soft);
-    }
-
-    .avatar-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-      filter: grayscale(0.15) contrast(1.05);
-    }
-
-    .avatar-wrap::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60%;
-      background: linear-gradient(to top, var(--pink-pale) 5%, transparent 100%);
-      pointer-events: none;
-    }
-
-    .avatar-name {
-      position: absolute;
-      bottom: 12px;
-      left: 14px;
-      z-index: 1;
-    }
-
-    .avatar-name h1 {
-      font-family: "Silkscreen", monospace;
-      font-size: 24px;
-      color: var(--text);
-      line-height: 1;
-      text-shadow: 0 2px 8px rgba(255, 240, 245, 0.9);
-    }
-
-    .avatar-name p {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-top: 2px;
-    }
-
-    .identity-tags {
-      padding: 12px 14px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      border-bottom: 1.5px dashed var(--border-soft);
-    }
-
-    .tag {
-      font-family: "DM Mono", monospace;
-      font-size: 11px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      border: 1.5px solid var(--border);
-      background: var(--pink-light);
-      color: var(--accent);
-    }
-
-    .section-block {
-      padding: 12px 14px;
-      border-bottom: 1.5px dashed var(--border-soft);
-      animation: float-in 600ms ease-out both;
-    }
-
-    .section-block:nth-child(4) { animation-delay: 100ms; }
-    .section-block:nth-child(5) { animation-delay: 200ms; }
-
-    .lbl {
-      font-family: "Silkscreen", monospace;
-      font-size: 13px;
-      color: var(--accent);
-      margin-bottom: 5px;
-    }
-
-    .section-block .val {
-      font-size: 13px;
-      line-height: 1.6;
-      color: var(--text-soft);
-    }
-
-    .section-block .val span {
-      display: inline;
-    }
-
-    /* ── right column ── */
-    .right {
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* hero area */
-    .hero {
-      padding: 20px 22px 16px;
-      border-bottom: 2px solid var(--border-soft);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      animation: float-in 600ms ease-out 80ms both;
-    }
-
-    .hero h2 {
-      font-family: "Silkscreen", monospace;
-      font-size: 28px;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .hero h2 span {
-      color: var(--pink-deep);
-    }
-
-    .hero-sub {
-      font-size: 13px;
-      color: var(--text-soft);
-      margin-top: 6px;
-      max-width: 340px;
-      line-height: 1.5;
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-family: "DM Mono", monospace;
-      font-size: 12px;
-      color: #3a7845;
-      background: #e6faec;
-      border: 1.5px solid #b2e6be;
-      border-radius: 999px;
-      padding: 5px 11px;
-      white-space: nowrap;
-    }
-
-    .status-pill .led {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--green);
-      animation: pulse-dot 1.8s infinite;
-    }
-
-    /* info table */
-    .info-grid {
-      display: grid;
-      grid-template-columns: 90px 1fr;
-      border-bottom: 2px solid var(--border-soft);
-      animation: float-in 600ms ease-out 160ms both;
-    }
-
-    .info-grid .cell {
-      padding: 10px 14px;
-      font-size: 13px;
-      border-bottom: 1px solid var(--border-soft);
-      display: flex;
-      align-items: center;
-    }
-
-    .info-grid .cell:nth-last-child(-n+2) {
-      border-bottom: none;
-    }
-
-    .info-grid .cell.key {
-      font-family: "Silkscreen", monospace;
-      font-size: 11px;
-      color: var(--accent);
-      background: rgba(252, 228, 236, 0.5);
-      border-right: 1.5px solid var(--border-soft);
-    }
-
-    .info-grid .cell.value {
-      color: var(--text-soft);
-      line-height: 1.55;
-    }
-
-    .bio-cell {
-      align-items: flex-start !important;
-      padding-top: 12px !important;
-      padding-bottom: 14px !important;
-      min-height: 80px;
-    }
-
-    /* content area */
-    .bottom-area {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 200px;
-      gap: 0;
-    }
-
-    .photos-area {
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 10px;
-      border-right: 1.5px solid var(--border-soft);
-      animation: float-in 600ms ease-out 240ms both;
-    }
-
-    .photos-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .photo-frame {
-      border-radius: 10px;
-      border: 2px solid var(--border-soft);
-      overflow: hidden;
-      background: var(--pink-light);
-      aspect-ratio: 2 / 3;
-    }
-
-    .photo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .photo-frame:first-child img {
-      object-position: center 30%;
-    }
-
-    .photo-frame:last-child img {
-      object-position: center 22%;
-    }
-
-    /* sidebar stack */
-    .sidebar-stack {
-      display: flex;
-      flex-direction: column;
-      animation: float-in 600ms ease-out 300ms both;
-    }
-
-    .mini-section {
-      padding: 12px 14px;
-      border-bottom: 1.5px dashed var(--border-soft);
-    }
-
-    /* now playing */
-    .now-playing-box {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      margin-top: 8px;
-      padding: 9px 10px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      background: var(--pink-light);
-    }
-
-    .disc {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      border: 2px solid var(--pink-deep);
-      background: conic-gradient(var(--pink-light), var(--pink), var(--pink-light));
-      flex-shrink: 0;
-      animation: disc-spin 4s linear infinite;
-      position: relative;
-    }
-
-    .disc::after {
-      content: "";
-      position: absolute;
-      inset: 7px;
-      border-radius: 999px;
-      background: var(--pink-deep);
-    }
-
-    .song-info {
-      min-width: 0;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    .song-info b {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .song-info span {
-      display: block;
-      font-size: 11px;
-      color: var(--text-soft);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* links */
-    .link-list {
-      display: grid;
-      gap: 5px;
-      margin-top: 8px;
-    }
-
-    .link-list a {
-      text-decoration: none;
-      font-family: "DM Mono", monospace;
-      font-size: 12px;
-      color: var(--text);
-      padding: 6px 10px;
-      border: 1.5px solid var(--border-soft);
-      border-radius: 8px;
-      background: var(--pink-light);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 150ms, border-color 150ms, transform 150ms;
-    }
-
-    .link-list a:hover {
-      background: var(--pink-bg);
-      border-color: var(--border);
-      transform: translateY(-1px);
-    }
-
-    .link-list a .num {
-      font-family: "Silkscreen", monospace;
-      font-size: 10px;
-      color: var(--pink-deep);
-      width: 16px;
-    }
-
-    /* mood */
-    .mood-bar {
-      margin-top: 10px;
-      padding: 12px 14px;
-      border-top: 1.5px dashed var(--border-soft);
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    .mood-bar .kaomoji {
-      display: block;
-      font-size: 14px;
-      margin-top: 4px;
-      color: var(--accent);
-    }
-
-    /* ── footer ── */
-    .footer {
-      position: relative;
-      z-index: 1;
-      margin-top: 14px;
-      font-family: "DM Mono", monospace;
-      font-size: 12px;
-      color: var(--text-soft);
-      opacity: 0.6;
-      animation: float-in 700ms ease-out 500ms both;
-    }
-
-    .footer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    /* kaomoji decoration */
-    .kao-deco {
-      text-align: center;
-      padding: 8px 14px;
-      font-size: 13px;
-      color: var(--pink-deep);
-      letter-spacing: 2px;
-      border-bottom: 1.5px dashed var(--border-soft);
-    }
-
-    /* ── responsive ── */
-    @media (max-width: 780px) {
-      .card-body {
-        grid-template-columns: 1fr;
-      }
-
-      .left {
-        border-right: none;
-        border-bottom: 2px solid var(--border-soft);
-      }
-
-      .avatar-wrap {
-        aspect-ratio: 16 / 10;
-      }
-
-      .bottom-area {
-        grid-template-columns: 1fr;
-      }
-
-      .photos-area {
-        border-right: none;
-        border-bottom: 1.5px solid var(--border-soft);
-      }
-    }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 16px 8px;
-      }
-
-      .hero h2 {
-        font-size: 22px;
-      }
-
-      .info-grid {
-        grid-template-columns: 76px 1fr;
-      }
-
-      .photos-area {
-        grid-template-columns: 1fr;
-      }
+    @media(max-width:480px) {
+      body { padding:16px 8px; }
+      .hero h2 { font-size:22px; }
+      .info-grid { grid-template-columns:76px 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <main class="card-window">
+  <div class="vhs-overlay"></div>
+  <div class="scanlines"></div>
+  <div class="cross-pattern"></div>
+  <div id="tsparticles"></div>
+  <canvas id="aurora"></canvas>
+  <canvas id="three-canvas"></canvas>
 
-    <!-- title bar -->
-    <header class="titlebar">
-      <div class="titlebar-left">
-        <svg viewBox="0 0 16 16"><rect x="1" y="3" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M4 1v3M8 1v3M12 1v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        <span>Marzo 2026</span>
-      </div>
-      <div class="dots">
-        <span class="dot dot-r"></span>
-        <span class="dot dot-y"></span>
-        <span class="dot dot-g"></span>
-      </div>
-    </header>
+  <div class="border-glow">
+    <main class="card-window">
+      <div class="blood-drips" id="bloodDrips"></div>
 
-    <div class="card-body">
-
-      <!-- ── left sidebar ── -->
-      <div class="left">
-        <div class="avatar-wrap">
-          <img src="assets/avatar.jpg" alt="Frambuesa" loading="eager">
-          <div class="avatar-name">
-            <h1>Frambuesa</h1>
-            <p>@vs.8081</p>
-          </div>
+      <header class="titlebar">
+        <div class="titlebar-left">
+          <span>⌘</span><span>frambuesa.exe</span>
+          <span class="clock" id="clock"></span>
         </div>
-
-        <div class="identity-tags">
-          <span class="tag">Bisexual</span>
-          <span class="tag">She / Her</span>
-          <span class="tag">Acuario</span>
-          <span class="tag">21</span>
+        <div class="dots">
+          <span class="dot dot-r"></span>
+          <span class="dot dot-y"></span>
+          <span class="dot dot-g"></span>
         </div>
+      </header>
 
-        <div class="section-block">
-          <p class="lbl">Likes</p>
-          <p class="val">Pierce the Veil, Sophie Thatcher, tocar piano a las 2am, true crime, dormir, dibujar y programar.</p>
-        </div>
-
-        <div class="section-block">
-          <p class="lbl">Dislikes</p>
-          <p class="val">La palta, madrugar, el calor, ruido innecesario, homofobia y transfobia.</p>
-        </div>
-
-        <div class="kao-deco">. ⁺ ✧ ─ ⊹ ─ ✧ ⁺ .</div>
-      </div>
-
-      <!-- ── right main ── -->
-      <div class="right">
-
-        <div class="hero">
-          <div>
-            <h2><span>♡</span> Frambuesa<span>!</span></h2>
-            <p class="hero-sub">Ing. informática :3.</p>
-          </div>
-          <div class="status-pill">
-            <span class="led"></span>
-            Online
-          </div>
-        </div>
-
-        <div class="info-grid">
-          <div class="cell key">User</div>
-          <div class="cell value">@vs.8081</div>
-
-          <div class="cell key">Status</div>
-          <div class="cell value">probablemente con 40 pestañas abiertas.</div>
-
-          <div class="cell key">Lugar</div>
-          <div class="cell value">Santiago, Chile 🇨🇱</div>
-
-          <div class="cell key bio-cell">Bio</div>
-          <div class="cell value bio-cell">Toco piano, dibujo cuando me da la gana, y estudio informática.</div>
-        </div>
-
-        <div class="bottom-area">
-
-          <!-- photos -->
-          <div class="photos-area">
-            <div class="photos-row">
-              <figure class="photo-frame">
-                <img src="assets/a6464def-9da2-4d0e-a523-ae6d841dd4ca.jpg" alt="Frambuesa selfie" loading="lazy">
-              </figure>
-              <figure class="photo-frame">
-                <img src="assets/IMG_9843.png" alt="Frambuesa retrato" loading="lazy">
-              </figure>
+      <div class="card-body">
+        <div class="left">
+          <div class="avatar-wrap">
+            <img src="assets/avatar.jpg" alt="Frambuesa" loading="eager">
+            <div class="avatar-scanline"></div>
+            <div class="avatar-name">
+              <h1 class="glitch" data-text="Frambuesa">Frambuesa</h1>
+              <p>@vs.8081</p>
             </div>
           </div>
+          <div class="identity-tags">
+            <span class="tag">Bisexual</span>
+            <span class="tag">She / Her</span>
+            <span class="tag">Acuario</span>
+            <span class="tag">21</span>
+          </div>
+          <div class="section-block">
+            <p class="lbl">Likes</p>
+            <p class="val">Pierce the Veil, Sophie Thatcher, tocar piano a las 2am, true crime, dormir, dibujar y programar.</p>
+          </div>
+          <div class="section-block">
+            <p class="lbl">Dislikes</p>
+            <p class="val">La palta, madrugar, el calor, ruido innecesario, homofobia y transfobia.</p>
+          </div>
+          <div class="kao-deco">. ⁺ ✧ ─ ⊹ ─ ✧ ⁺ .</div>
+        </div>
 
-          <!-- sidebar stack -->
-          <div class="sidebar-stack">
-
-            <div class="mini-section">
-              <p class="lbl">Now Playing</p>
-              <div class="now-playing-box">
-                <span class="disc"></span>
-                <div class="song-info">
-                  <b>Hell Above</b>
-                  <span>Pierce the Veil</span>
+        <div class="right">
+          <div class="hero">
+            <div>
+              <h2>
+                <span class="heart">♡</span>
+                <span class="glitch name-main" data-text="Frambuesa!">Frambuesa!</span>
+              </h2>
+              <p class="hero-sub"><span id="typewriter"></span><span class="cursor">▌</span></p>
+            </div>
+            <div class="status-pill"><span class="led"></span> Online</div>
+          </div>
+          <div class="info-grid">
+            <div class="cell key">User</div><div class="cell value">@vs.8081</div>
+            <div class="cell key">Status</div><div class="cell value">probablemente con 40 pestañas abiertas.</div>
+            <div class="cell key">Lugar</div><div class="cell value">Santiago, Chile 🇨🇱</div>
+            <div class="cell key bio-cell">Bio</div><div class="cell value bio-cell">Toco piano, dibujo cuando me da la gana, y estudio informática.</div>
+          </div>
+          <div class="bottom-area">
+            <div class="photos-area">
+              <div class="photos-row">
+                <figure class="photo-frame" data-tilt><div class="glow-overlay"></div><img src="assets/a6464def-9da2-4d0e-a523-ae6d841dd4ca.jpg" alt="Frambuesa selfie" loading="lazy"></figure>
+                <figure class="photo-frame" data-tilt><div class="glow-overlay"></div><img src="assets/IMG_9843.png" alt="Frambuesa retrato" loading="lazy"></figure>
+              </div>
+            </div>
+            <div class="sidebar-stack">
+              <div class="mini-section">
+                <p class="lbl">Now Playing</p>
+                <div class="now-playing-box" data-tilt>
+                  <div class="audio-bars" id="audioBars"></div>
+                  <div class="song-info"><b>Hell Above</b><span>Pierce the Veil</span></div>
                 </div>
               </div>
-            </div>
-
-            <div class="mini-section">
-              <p class="lbl">Links</p>
-              <div class="link-list">
-                <a href="https://open.spotify.com/user/7xdcnnidyen2jhydlrfc0eyiz?si=8xcCRZoLRlmHTFdf1VIOqA" target="_blank" rel="noopener"><span class="num">1</span> spotify</a>
-                <a href="https://github.com/punkyyy01" target="_blank" rel="noopener"><span class="num">2</span> github</a>
-                <a href="https://steamcommunity.com/profiles/76561199472506595/" target="_blank" rel="noopener"><span class="num">3</span> steam</a>
-                <a href="https://www.tiktok.com/@another.soapy.t" target="_blank" rel="noopener"><span class="num">4</span> tiktok</a>
-                <a href="https://www.instagram.com/another.soapy.t/" target="_blank" rel="noopener"><span class="num">5</span> instagram</a>
+              <div class="mini-section">
+                <p class="lbl">Links</p>
+                <div class="link-list">
+                  <a href="https://open.spotify.com/user/7xdcnnidyen2jhydlrfc0eyiz?si=8xcCRZoLRlmHTFdf1VIOqA" target="_blank" rel="noopener"><span class="num">1</span><span class="lt">spotify</span><span class="arrow">→</span></a>
+                  <a href="https://github.com/punkyyy01" target="_blank" rel="noopener"><span class="num">2</span><span class="lt">github</span><span class="arrow">→</span></a>
+                  <a href="https://steamcommunity.com/profiles/76561199472506595/" target="_blank" rel="noopener"><span class="num">3</span><span class="lt">steam</span><span class="arrow">→</span></a>
+                  <a href="https://www.tiktok.com/@another.soapy.t" target="_blank" rel="noopener"><span class="num">4</span><span class="lt">tiktok</span><span class="arrow">→</span></a>
+                  <a href="https://www.instagram.com/another.soapy.t/" target="_blank" rel="noopener"><span class="num">5</span><span class="lt">instagram</span><span class="arrow">→</span></a>
+                </div>
+              </div>
+              <div class="mini-section gaming-section">
+                <p class="lbl">Gaming</p>
+                <p class="val">Arma Reforger, Insurgency, BF1 (2, 4, 2042), PvZ:GW2</p>
+              </div>
+              <div class="mood-bar">
+                current mood: debería estar durmiendo
+                <span class="kaomoji">( ᵕ̩̩ ᵕ̩̩ )</span>
               </div>
             </div>
-
-            <div class="mini-section">
-              <p class="lbl">Gaming</p>
-              <p class="val" style="font-size:12px; margin-top:4px;">Arma Reforger, Insurgency, BF1 (2, 4, 2042), PvZ:GW2</p>
-            </div>
-
-            <div class="mood-bar">
-              current mood: debería estar durmiendo
-              <span class="kaomoji">( ᵕ̩̩ ᵕ̩̩ )</span>
-            </div>
-
           </div>
         </div>
       </div>
+    </main>
+  </div>
+  <footer class="footer" id="footer">( coded with love by <a href="#">frambuesa</a> )</footer>
 
-    </div>
-  </main>
+  <script>
+  /* ═══════════════════════════════════════════
+     PERFORMANCE: All mouse tracking uses rAF,
+     canvases render at half-res, no mix-blend-mode
+  ═══════════════════════════════════════════ */
 
-  <footer class="footer">( coded with love by <a href="#">frambuesa</a> )</footer>
+  /* Shared mouse state — ONE listener for everything */
+  let MX = 0, MY = 0;
+  document.addEventListener('mousemove', e => { MX = e.clientX; MY = e.clientY; }, { passive: true });
 
+  /* 2. tsParticles — reduced count, simpler interaction */
+  (function(){
+    tsParticles.load("tsparticles", {
+      fpsLimit: 60,
+      particles: {
+        number: { value: 30, density: { enable: true, area: 1000 } },
+        color: { value: ["#8b0000", "#ff003c", "#5a1a2e"] },
+        shape: { type: "circle" },
+        opacity: {
+          value: 0.35,
+          random: { enable: true, minimumValue: 0.1 }
+          /* removed opacity animation — saves CPU */
+        },
+        size: {
+          value: 2.5,
+          random: { enable: true, minimumValue: 0.8 }
+        },
+        links: {
+          enable: true, distance: 90,
+          color: "#8b0000", opacity: 0.1, width: 0.8
+        },
+        move: {
+          enable: true, speed: 0.5,
+          direction: "none", random: true,
+          straight: false, outModes: "bounce"
+        }
+      },
+      interactivity: {
+        events: {
+          onHover: { enable: true, mode: "grab" },
+          onClick: { enable: true, mode: "repulse" }
+        },
+        modes: {
+          grab: { distance: 130, links: { opacity: 0.35, color: "#ff003c" } },
+          repulse: { distance: 200, duration: 0.5 }
+        }
+      },
+      detectRetina: true
+    });
+  })();
+
+  /* 3. AURORA — renders at QUARTER resolution, stretched via CSS */
+  (function(){
+    const c = document.getElementById('aurora');
+    const gl = c.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
+    if (!gl) return;
+
+    const SCALE = 0.25; // quarter resolution!
+    function resize() {
+      c.width = Math.floor(innerWidth * SCALE);
+      c.height = Math.floor(innerHeight * SCALE);
+      gl.viewport(0, 0, c.width, c.height);
+    }
+    resize();
+    addEventListener('resize', resize);
+
+    const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}';
+    const fs = `precision lowp float;uniform float t;uniform vec2 r;
+    void main(){vec2 uv=gl_FragCoord.xy/r;float n=0.0;
+    for(float i=1.0;i<4.0;i++){uv.y+=sin(uv.x*3.0*i+t*0.3)*0.08/i;uv.x+=cos(uv.y*2.5*i+t*0.2)*0.06/i;n+=sin(uv.x*6.0+t*0.4)*0.5+0.5;}
+    n/=3.0;vec3 col=mix(vec3(0.05,0.0,0.02),vec3(0.55,0.0,0.1),n*0.5);
+    col+=vec3(0.15,0.0,0.05)*sin(t*0.2+uv.y*3.0)*0.3;gl_FragColor=vec4(col,n*0.35);}`;
+
+    function mk(src, type) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+    const prog = gl.createProgram();
+    gl.attachShader(prog, mk(vs, gl.VERTEX_SHADER));
+    gl.attachShader(prog, mk(fs, gl.FRAGMENT_SHADER));
+    gl.linkProgram(prog); gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const pL = gl.getAttribLocation(prog, 'p');
+    gl.enableVertexAttribArray(pL);
+    gl.vertexAttribPointer(pL, 2, gl.FLOAT, false, 0, 0);
+    const tL = gl.getUniformLocation(prog, 't');
+    const rL = gl.getUniformLocation(prog, 'r');
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    /* Throttle to ~30fps for aurora (it's slow-moving, doesn't need 60) */
+    let last = 0;
+    function draw(now) {
+      requestAnimationFrame(draw);
+      if (now - last < 33) return; // ~30fps cap
+      last = now;
+      gl.uniform1f(tL, now * 0.001);
+      gl.uniform2f(rL, c.width, c.height);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    requestAnimationFrame(draw);
+  })();
+
+  /* 4. THREE.js — reduced pixel ratio, no antialias, fewer meshes, 30fps */
+  (function(){
+    const canvas = document.getElementById('three-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 100);
+    camera.position.z = 5;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(1); // force 1x — huge perf gain on retina
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    const geo = [
+      new THREE.IcosahedronGeometry(0.5, 0),
+      new THREE.OctahedronGeometry(0.4, 0),
+      new THREE.TetrahedronGeometry(0.45, 0),
+      new THREE.TorusGeometry(0.35, 0.12, 6, 5),
+      new THREE.DodecahedronGeometry(0.35, 0),
+    ];
+
+    const meshes = [];
+    for (let i = 0; i < 6; i++) { // 6 instead of 8
+      const mat = new THREE.MeshBasicMaterial({ color: 0x8b0000, wireframe: true, transparent: true, opacity: Math.random() * 0.25 + 0.12 });
+      const m = new THREE.Mesh(geo[Math.floor(Math.random() * geo.length)], mat);
+      m.position.set((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 4 - 1);
+      m.userData = { rx: (Math.random() - 0.5) * 0.008, ry: (Math.random() - 0.5) * 0.008, fs: Math.random() * 0.3 + 0.2, fa: Math.random() * 0.3 + 0.1, by: m.position.y };
+      scene.add(m); meshes.push(m);
+    }
+
+    /* Camera follows mouse with shared MX/MY */
+    let camTargetX = 0, camTargetY = 0;
+    let last = 0;
+
+    function anim(t) {
+      requestAnimationFrame(anim);
+      if (t - last < 33) return; // 30fps cap
+      last = t;
+
+      const time = t * 0.001;
+      for (let i = 0; i < meshes.length; i++) {
+        const m = meshes[i];
+        m.rotation.x += m.userData.rx;
+        m.rotation.y += m.userData.ry;
+        m.position.y = m.userData.by + Math.sin(time * m.userData.fs) * m.userData.fa;
+      }
+
+      camTargetX = (MX / innerWidth - 0.5) * 0.6;
+      camTargetY = -(MY / innerHeight - 0.5) * 0.4;
+      camera.position.x += (camTargetX - camera.position.x) * 0.03;
+      camera.position.y += (camTargetY - camera.position.y) * 0.03;
+      camera.lookAt(scene.position);
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(anim);
+  })();
+
+  /* 5. GSAP — cinematic reveal (runs once, no perf impact after) */
+  (function(){
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    tl.to('.border-glow', { opacity: 1, duration: 0.8, delay: 0.3 })
+      .from('.titlebar', { y: -20, opacity: 0, duration: 0.5 }, "-=.3")
+      .from('.avatar-wrap', { scale: 1.1, opacity: 0, duration: 0.7 }, "-=.2")
+      .to('.tag', { opacity: 1, y: 0, duration: 0.35, stagger: 0.08 }, "-=.3")
+      .to('.section-block', { opacity: 1, y: 0, duration: 0.4, stagger: 0.12 }, "-=.2")
+      .to('.hero', { opacity: 1, y: 0, duration: 0.5 }, "-=.4")
+      .to('.info-grid', { opacity: 1, y: 0, duration: 0.5 }, "-=.3")
+      .to('.photos-area', { opacity: 1, y: 0, duration: 0.5 }, "-=.3")
+      .to('.sidebar-stack', { opacity: 1, y: 0, duration: 0.5 }, "-=.4")
+      .to('.link-list a', { opacity: 1, x: 0, duration: 0.3, stagger: 0.06 }, "-=.3")
+      .to('.footer', { opacity: 0.6, duration: 0.5 }, "-=.2");
+  })();
+
+  /* 6. CLOCK */
+  (function(){
+    const el = document.getElementById('clock');
+    function t() { el.textContent = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
+    t(); setInterval(t, 1000);
+  })();
+
+  /* 7. TYPEWRITER */
+  (function(){
+    const text = 'Ing. informática :3', el = document.getElementById('typewriter');
+    let i = 0;
+    setTimeout(() => {
+      const iv = setInterval(() => { i++; el.textContent = text.slice(0, i); if (i >= text.length) clearInterval(iv); }, 45);
+    }, 1200);
+  })();
+
+  /* 8. GLITCH */
+  (function(){
+    const els = document.querySelectorAll('.glitch');
+    function trigger() {
+      els.forEach(e => e.classList.add('active'));
+      setTimeout(() => els.forEach(e => e.classList.remove('active')), 120);
+      setTimeout(() => els.forEach(e => e.classList.add('active')), 180);
+      setTimeout(() => els.forEach(e => e.classList.remove('active')), 250);
+      if (Math.random() > 0.6) {
+        setTimeout(() => { els.forEach(e => e.classList.add('active')); setTimeout(() => els.forEach(e => e.classList.remove('active')), 100); }, 400);
+      }
+      setTimeout(trigger, 2500 + Math.random() * 4000);
+    }
+    setTimeout(trigger, 1800);
+  })();
+
+  /* 9. AUDIO BARS */
+  (function(){
+    const c = document.getElementById('audioBars');
+    for (let i = 0; i < 14; i++) {
+      const b = document.createElement('div');
+      b.className = 'bar';
+      b.style.setProperty('--bar-h', (Math.random() * 18 + 4) + 'px');
+      b.style.animationDelay = (Math.random() * 0.6) + 's';
+      b.style.animationDuration = (0.25 + Math.random() * 0.5) + 's';
+      b.style.height = '3px';
+      c.appendChild(b);
+    }
+  })();
+
+  /* 10. 3D TILT — rAF throttled */
+  (function(){
+    document.querySelectorAll('[data-tilt]').forEach(el => {
+      const glow = el.querySelector('.glow-overlay');
+      let ticking = false;
+
+      el.addEventListener('mousemove', e => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const r = el.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width;
+          const y = (e.clientY - r.top) / r.height;
+          el.style.transform = `perspective(450px) rotateX(${(0.5 - y) * 14}deg) rotateY(${(x - 0.5) * 14}deg) scale(1.03)`;
+          if (glow) glow.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%,rgba(255,0,60,.2) 0%,transparent 55%)`;
+          ticking = false;
+        });
+      }, { passive: true });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = 'perspective(450px) rotateX(0) rotateY(0) scale(1)';
+      });
+    });
+  })();
+
+  /* 11. BLOOD DRIPS */
+  (function(){
+    const c = document.getElementById('bloodDrips');
+    [5, 18, 35, 52, 68, 78, 90].forEach((p, i) => {
+      const d = document.createElement('div');
+      d.className = 'drip';
+      d.style.left = p + '%';
+      d.style.setProperty('--drip-h', (15 + Math.random() * 35) + 'px');
+      d.style.animationDelay = (i * 0.8 + Math.random() * 2) + 's';
+      d.style.animationDuration = (3 + Math.random() * 3) + 's';
+      c.appendChild(d);
+    });
+  })();
+  </script>
 </body>
 </html>
