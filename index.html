@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Frambuesa</title>
-  <meta name="description" content="Estudiante de Ingeniería en Informática, pianista desde los 12, y con demasiadas pestañas abiertas.">
+  <meta name="description" content="Estudiante de Ingeniería en Informática, pianista, y con demasiadas pestañas abiertas.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -347,9 +347,9 @@
     .fs{display:flex;gap:16px;font-family:"Silkscreen",monospace;font-size:9px}
     .fs .fd{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s infinite;display:inline-block}
 
-    .reveal{opacity:0;transform:translateY(30px)}
-    .reveal-l{opacity:0;transform:translateX(-30px)}
-    .reveal-r{opacity:0;transform:translateX(30px)}
+    .reveal{opacity:0;transform:translateY(25px)}
+    .reveal-l{opacity:0;transform:translateX(-25px)}
+    .reveal-r{opacity:0;transform:translateX(25px)}
 
     @media(max-width:860px){
       .card-body{grid-template-columns:1fr}
@@ -631,63 +631,72 @@ tsParticles.load("tsparticles",{fpsLimit:60,particles:{number:{value:22,density:
    CARD INTRO ANIMATION
    ═══════════════════════════════════════════════ */
 (function(){
-  const tl=gsap.timeline({defaults:{ease:"power3.out"}});
-  tl.to('.border-glow',{opacity:1,duration:.8,delay:.2})
-    .from('.marquee-bar',{y:-10,opacity:0,duration:.4},"-=.3")
-    .from('.titlebar',{y:-15,opacity:0,duration:.4},"-=.2")
-    .from('.avatar-wrap',{scale:1.08,opacity:0,duration:.6},"-=.15")
-    .from('.ekg-container',{opacity:0,x:-20,duration:.4},"-=.2")
-    .to('.tag',{opacity:1,y:0,duration:.3,stagger:.06},"-=.2")
-    .to('.section-block',{opacity:1,y:0,duration:.35,stagger:.1},"-=.15")
-    .to('.card-hero',{opacity:1,y:0,duration:.45},"-=.3")
-    .to('.info-cards',{opacity:1,y:0,duration:.45},"-=.25")
-    .from('.info-card',{scale:.95,opacity:0,duration:.3,stagger:.06},"-=.3")
-    .to('.photos-area',{opacity:1,y:0,duration:.45},"-=.25")
-    .to('.sidebar',{opacity:1,y:0,duration:.45},"-=.35")
-    .to('.link-list a',{opacity:1,x:0,duration:.25,stagger:.05},"-=.25")
-    .from('.footer-bar',{y:10,opacity:0,duration:.35},"-=.15")
-    .to('#scrollHint',{opacity:1,duration:.5},"-=.1");
+  const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+
+  // Card shell appears with a soft bloom
+  tl.to('.border-glow', { opacity: 1, scale: 1, duration: 0.9, ease: 'expo.out', delay: 0.15 })
+
+    // Top bars slide down naturally
+    .from('.marquee-bar', { y: -12, opacity: 0, duration: 0.45 }, '-=0.45')
+    .from('.titlebar', { y: -12, opacity: 0, duration: 0.4 }, '-=0.3')
+
+    // Left column cascade: avatar → ekg → tags → sections
+    .from('.avatar-wrap', { opacity: 0, scale: 1.03, duration: 0.6 }, '-=0.2')
+    .from('.ekg-container', { opacity: 0, x: -15, duration: 0.4 }, '-=0.35')
+    .to('.tag', { opacity: 1, y: 0, duration: 0.3, stagger: 0.05 }, '-=0.2')
+    .to('.section-block', { opacity: 1, y: 0, duration: 0.35, stagger: 0.08 }, '-=0.15')
+    .from('.kao-deco', { opacity: 0, duration: 0.3 }, '-=0.15')
+
+    // Center column
+    .to('.card-hero', { opacity: 1, y: 0, duration: 0.5 }, '-=0.4')
+    .to('.info-cards', { opacity: 1, y: 0, duration: 0.45 }, '-=0.3')
+    .from('.info-card', { opacity: 0, y: 8, duration: 0.3, stagger: 0.05 }, '-=0.25')
+    .to('.photos-area', { opacity: 1, y: 0, duration: 0.45 }, '-=0.25')
+
+    // Right column
+    .to('.sidebar', { opacity: 1, y: 0, duration: 0.5 }, '-=0.4')
+    .to('.link-list a', { opacity: 1, x: 0, duration: 0.25, stagger: 0.04 }, '-=0.25')
+
+    // Footer + scroll hint
+    .from('.footer-bar', { y: 8, opacity: 0, duration: 0.35 }, '-=0.15')
+    .to('#scrollHint', { opacity: 1, duration: 0.6, ease: 'power1.out' }, '-=0.2');
 })();
 
 
-/* ═══════════════════════════════════════════════════════════════
-   ██  THE MORPH TRANSITION  ██
-   Each card element individually detaches, travels with depth,
-   and reassembles as the portfolio. The name "Frambuesa" floats
-   across the morph layer to bridge both phases.
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   CARD → PORTFOLIO TRANSITION
+   Clean dissolve with coordinated directional fade
+   ═══════════════════════════════════════════════ */
 gsap.registerPlugin(ScrollTrigger);
 
 (function(){
-  const phaseCard   = document.getElementById('phaseCard');
-  const borderGlow  = document.getElementById('borderGlow');
-  const cardWindow  = document.getElementById('cardWindow');
-  const phasePort   = document.getElementById('phasePortfolio');
-  const pNav        = document.getElementById('pNav');
-  const scrollHint  = document.getElementById('scrollHint');
-  const morphName   = document.getElementById('morphName');
-  const morphLayer  = document.getElementById('morphLayer');
-  const shockwave1  = document.getElementById('shockwave1');
-  const shockwave2  = document.getElementById('shockwave2');
+  const phaseCard  = document.getElementById('phaseCard');
+  const borderGlow = document.getElementById('borderGlow');
+  const phasePort  = document.getElementById('phasePortfolio');
+  const pNav       = document.getElementById('pNav');
+  const scrollHint = document.getElementById('scrollHint');
 
-  // Gather all morphable card sections
-  const avatar      = document.querySelector('[data-morph="avatar"]');
-  const leftCol     = document.querySelector('[data-morph="left"]');
-  const heroSection = document.querySelector('[data-morph="hero"]');
-  const infoCards   = document.querySelectorAll('[data-morph-card]');
-  const tags        = document.querySelectorAll('[data-morph-tag]');
-  const photos      = document.querySelectorAll('[data-morph-photo]');
-  const sidebarSections = document.querySelectorAll('[data-morph="nowplaying"],[data-morph="links"],[data-morph="gaming"],[data-morph="mood"]');
-  const ekgEl       = document.querySelector('[data-morph="ekg"]');
-  const titlebar    = document.querySelector('[data-morph="titlebar"]');
-  const marqueeBar  = document.querySelector('[data-morph="marquee"]');
-  const footerBar   = document.querySelector('[data-morph="footer"]');
-  const symbolEl    = document.querySelector('[data-morph="symbol"]');
-  const kaoEl       = document.querySelector('[data-morph="kao"]');
-  const likesEl     = document.querySelector('[data-morph="likes"]');
-  const dislikesEl  = document.querySelector('[data-morph="dislikes"]');
+  // All card sections in visual top-to-bottom order for a clean wave
+  const cardParts = [
+    '[data-morph="marquee"]',
+    '[data-morph="titlebar"]',
+    '[data-morph="avatar"]',
+    '[data-morph="ekg"]',
+    '[data-morph="tags"]',
+    '[data-morph="hero"]',
+    '[data-morph="infocards"]',
+    '[data-morph="likes"]',
+    '[data-morph="dislikes"]',
+    '[data-morph="kao"]',
+    '[data-morph="symbol"]',
+    '[data-morph="nowplaying"]',
+    '[data-morph="links"]',
+    '[data-morph="gaming"]',
+    '[data-morph="mood"]',
+    '[data-morph="photos"]',
+    '[data-morph="footer"]'
+  ].map(s => document.querySelector(s)).filter(Boolean);
 
-  // The main timeline — scrubbed by scroll
   const morphTL = gsap.timeline({
     scrollTrigger: {
       trigger: '#transitionZone',
@@ -695,271 +704,81 @@ gsap.registerPlugin(ScrollTrigger);
       end: 'bottom top',
       pin: '#phaseCard',
       pinSpacing: false,
-      scrub: 1.5,
+      scrub: 0.8,
       anticipatePin: 1,
-      onUpdate: function(self) {
-        const p = self.progress;
-        if (p > 0.88) {
-          pNav.classList.add('visible');
-        } else {
-          pNav.classList.remove('visible');
-        }
+      onUpdate(self) {
+        pNav.classList.toggle('visible', self.progress > 0.82);
       },
-      onLeave: function() {
+      onLeave() {
         phasePort.style.visibility = 'visible';
         phasePort.style.opacity = '1';
         phaseCard.style.visibility = 'hidden';
-        morphLayer.style.opacity = '0';
       },
-      onEnterBack: function() {
+      onEnterBack() {
         phasePort.style.visibility = 'hidden';
         phasePort.style.opacity = '0';
         phaseCard.style.visibility = 'visible';
-        morphLayer.style.opacity = '1';
       }
     }
   });
 
-  /* ── PHASE A (0–0.12): Hint & prepare ── */
+  /* ── Phase A (0–0.06): Hide scroll hint ── */
+  morphTL.to(scrollHint, { opacity: 0, y: 8, duration: 0.05, ease: 'power1.in' }, 0);
 
-  // Hide scroll hint immediately
-  morphTL.to(scrollHint, { opacity: 0, duration: 0.04 }, 0);
-
-  // Subtle zoom-in on the whole card
-  morphTL.to(borderGlow, {
-    scale: 1.015,
-    duration: 0.12,
-    ease: 'power1.in'
-  }, 0);
-
-  /* ── PHASE B (0.08–0.35): Card disassembly ──
-       Each section detaches and flies in a unique direction
-       with 3D perspective rotation for depth feel */
-
-  // Titlebar lifts up
-  morphTL.to(titlebar, {
-    y: -80, opacity: 0, rotateX: 15,
-    duration: 0.12, ease: 'power2.in'
-  }, 0.08);
-
-  // Marquee bar lifts up
-  morphTL.to(marqueeBar, {
-    y: -120, opacity: 0, rotateX: 20,
-    duration: 0.12, ease: 'power2.in'
-  }, 0.06);
-
-  // Footer bar drops down
-  morphTL.to(footerBar, {
-    y: 80, opacity: 0, rotateX: -15,
-    duration: 0.12, ease: 'power2.in'
-  }, 0.08);
-
-  // Avatar: zoom in dramatically with blur-like effect
-  morphTL.to(avatar, {
-    scale: 1.6, opacity: 0, rotateY: -8,
-    transformOrigin: 'center center',
-    duration: 0.18, ease: 'power2.in'
-  }, 0.12);
-
-  // EKG line stretches and fades
-  morphTL.to(ekgEl, {
-    scaleX: 3, opacity: 0, transformOrigin: 'center center',
-    duration: 0.15, ease: 'power2.in'
-  }, 0.12);
-
-  // Tags scatter in different directions with 3D rotation
-  tags.forEach((tag, i) => {
-    const angles = [
-      { x: -200, y: -150, rz: -45 },
-      { x: 200, y: -120, rz: 30 },
-      { x: -150, y: 180, rz: -60 },
-      { x: 250, y: 100, rz: 50 }
-    ];
-    const a = angles[i] || angles[0];
-    morphTL.to(tag, {
-      x: a.x, y: a.y, rotation: a.rz,
-      scale: 0.3, opacity: 0,
-      duration: 0.16, ease: 'power2.in'
-    }, 0.14 + i * 0.015);
+  /* ── Phase B (0.04–0.38): Card elements dissolve in a wave ──
+       All elements fade upward in the same direction — cohesive, not chaotic */
+  cardParts.forEach((el, i) => {
+    morphTL.to(el, {
+      opacity: 0,
+      y: -18,
+      duration: 0.10,
+      ease: 'power2.in'
+    }, 0.04 + i * 0.018);
   });
 
-  // Likes & dislikes slide left and fade
-  morphTL.to(likesEl, {
-    x: -200, opacity: 0, rotateY: 20,
-    duration: 0.14, ease: 'power2.in'
-  }, 0.14);
-  morphTL.to(dislikesEl, {
-    x: -250, opacity: 0, rotateY: 25,
-    duration: 0.14, ease: 'power2.in'
-  }, 0.16);
-
-  // Kaomoji deco floats up
-  morphTL.to(kaoEl, {
-    y: -100, opacity: 0, scale: 2, rotation: 180,
-    duration: 0.15, ease: 'power2.in'
-  }, 0.15);
-
-  // Hero section: the center name lifts
-  morphTL.to(heroSection, {
-    y: -60, opacity: 0, scale: 1.1,
-    duration: 0.15, ease: 'power2.in'
-  }, 0.14);
-
-  // Info cards fly outward individually with 3D tilt
-  infoCards.forEach((card, i) => {
-    const dirs = [
-      { x: -180, y: -100, rz: -12, ry: 20 },
-      { x: 180, y: -80, rz: 10, ry: -15 },
-      { x: -120, y: 120, rz: -8, ry: 12 },
-      { x: 160, y: 140, rz: 15, ry: -20 }
-    ];
-    const d = dirs[i];
-    morphTL.to(card, {
-      x: d.x, y: d.y, rotation: d.rz, rotateY: d.ry,
-      opacity: 0, scale: 0.7,
-      duration: 0.16, ease: 'power2.in'
-    }, 0.16 + i * 0.02);
-  });
-
-  // Photos: each flies in opposite direction with scale
-  photos.forEach((photo, i) => {
-    morphTL.to(photo, {
-      x: i === 0 ? -250 : 250,
-      y: i === 0 ? 80 : -80,
-      rotation: i === 0 ? -20 : 20,
-      scale: 0.4, opacity: 0,
-      duration: 0.18, ease: 'power2.in'
-    }, 0.18 + i * 0.02);
-  });
-
-  // Sidebar sections cascade out to the right
-  sidebarSections.forEach((sec, i) => {
-    morphTL.to(sec, {
-      x: 200 + i * 40, opacity: 0,
-      rotateY: -20, scale: 0.8,
-      duration: 0.14, ease: 'power2.in'
-    }, 0.14 + i * 0.025);
-  });
-
-  // Symbol floats up with glow
-  morphTL.to(symbolEl, {
-    y: -200, opacity: 0, scale: 3, rotation: 360,
-    duration: 0.2, ease: 'power2.in'
-  }, 0.12);
-
-  /* ── PHASE C (0.30–0.55): Card shell morphs to fullscreen ── */
-
-  // Remove border radius & expand
-  morphTL.to(borderGlow, {
-    width: '100vw', maxWidth: '100vw',
-    padding: 0, borderRadius: 0, scale: 1,
-    duration: 0.2, ease: 'power2.inOut'
-  }, 0.30);
-
-  morphTL.to(cardWindow, {
-    borderRadius: 0,
-    duration: 0.2, ease: 'power2.inOut'
-  }, 0.30);
-
-  /* ── PHASE D (0.42–0.55): The morph name flies across ──
-       This is the "bridge" — the name floats from the card's
-       position to become the portfolio hero name */
-
-  morphTL.to(morphName, {
-    opacity: 1,
-    duration: 0.04
-  }, 0.38);
-
-  morphTL.fromTo(morphName, {
-    fontSize: '24px',
-    top: '50%', left: '20%',
-    xPercent: 0, yPercent: -50,
-    fontFamily: '"Silkscreen", monospace',
-    letterSpacing: '0px',
-    scale: 1
-  }, {
-    fontSize: 'clamp(72px, 13vw, 170px)',
-    top: '50%', left: '50%',
-    xPercent: -50, yPercent: -50,
-    fontFamily: '"Playfair Display", serif',
-    letterSpacing: '-4px',
-    scale: 1,
-    duration: 0.22,
-    ease: 'power3.inOut'
-  }, 0.38);
-
-  /* ── PHASE E (0.50–0.58): Shockwave pulse ── */
-
-  morphTL.to(shockwave1, {
-    opacity: 0.6, scale: 3,
-    duration: 0.08, ease: 'power1.out'
-  }, 0.52);
-  morphTL.to(shockwave1, {
-    opacity: 0, scale: 5,
-    duration: 0.06
-  }, 0.60);
-
-  morphTL.to(shockwave2, {
-    opacity: 0.3, scale: 2.5,
-    duration: 0.08, ease: 'power1.out'
-  }, 0.54);
-  morphTL.to(shockwave2, {
-    opacity: 0, scale: 6,
-    duration: 0.08
-  }, 0.62);
-
-  // Brief red flash on the card
-  morphTL.to(cardWindow, {
-    backgroundColor: 'rgba(139,0,0,0.06)',
-    boxShadow: '0 0 200px rgba(139,0,0,0.3)',
-    duration: 0.04
-  }, 0.53);
-  morphTL.to(cardWindow, {
-    backgroundColor: '#070507',
-    boxShadow: 'none',
-    duration: 0.06
-  }, 0.57);
-
-  /* ── PHASE F (0.60–0.85): Portfolio fades in ── */
-
-  // Fade morph name out (portfolio has its own)
-  morphTL.to(morphName, {
-    opacity: 0,
-    duration: 0.08
-  }, 0.65);
-
-  // Fade the card shell away
+  /* ── Phase C (0.35–0.50): Card shell fades out ── */
   morphTL.to(borderGlow, {
     opacity: 0,
-    duration: 0.1
-  }, 0.65);
+    scale: 0.97,
+    duration: 0.15,
+    ease: 'power2.inOut'
+  }, 0.35);
 
-  // Bring portfolio in
-  morphTL.to(phasePort, {
-    visibility: 'visible', opacity: 1,
-    duration: 0.2, ease: 'power2.out'
-  }, 0.68);
+  /* ── Phase D (0.48–0.80): Portfolio fades in ── */
+  morphTL.set(phasePort, { visibility: 'visible' }, 0.48);
 
-  // Stagger portfolio hero elements
-  morphTL.from('.p-hero-label', {
-    y: 40, opacity: 0,
-    duration: 0.1, ease: 'power2.out'
-  }, 0.72);
+  morphTL.fromTo(phasePort,
+    { opacity: 0 },
+    { opacity: 1, duration: 0.18, ease: 'power1.out' },
+    0.50
+  );
 
-  morphTL.from('.p-hero-name', {
-    scale: 1.3, opacity: 0,
-    duration: 0.12, ease: 'power2.out'
-  }, 0.74);
-
-  morphTL.from('.p-hero-sub', {
-    y: 30, opacity: 0,
-    duration: 0.1, ease: 'power2.out'
-  }, 0.78);
-
-  morphTL.from('.p-hero-status', {
-    y: 20, opacity: 0, scale: 0.9,
-    duration: 0.08, ease: 'power2.out'
-  }, 0.82);
+  // Hero elements cascade with gentle upward entrance
+  morphTL.fromTo('.p-hero-label',
+    { y: 25, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.08, ease: 'power2.out' },
+    0.55
+  );
+  morphTL.fromTo('.p-hero-name',
+    { y: 35, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.10, ease: 'power2.out' },
+    0.59
+  );
+  morphTL.fromTo('.p-hero-sub',
+    { y: 20, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.08, ease: 'power2.out' },
+    0.65
+  );
+  morphTL.fromTo('.p-hero-status',
+    { y: 14, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.07, ease: 'power2.out' },
+    0.70
+  );
+  morphTL.fromTo('.p-scroll-hint',
+    { opacity: 0 },
+    { opacity: 1, duration: 0.06 },
+    0.75
+  );
 
 })();
 
@@ -967,14 +786,47 @@ gsap.registerPlugin(ScrollTrigger);
 /* ═══════════════════════════════════════════════
    PORTFOLIO SCROLL REVEALS
    ═══════════════════════════════════════════════ */
-document.querySelectorAll('.phase-portfolio .reveal').forEach(function(el){
-  gsap.to(el,{opacity:1,y:0,duration:.7,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}});
+
+// Standard reveals — vertical
+gsap.utils.toArray('.phase-portfolio .reveal').forEach(function(el) {
+  gsap.fromTo(el,
+    { opacity: 0, y: 25 },
+    { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+    }
+  );
 });
-document.querySelectorAll('.phase-portfolio .reveal-l').forEach(function(el){
-  gsap.to(el,{opacity:1,x:0,duration:.7,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}});
+
+// Reveals from left
+gsap.utils.toArray('.phase-portfolio .reveal-l').forEach(function(el) {
+  gsap.fromTo(el,
+    { opacity: 0, x: -25 },
+    { opacity: 1, x: 0, duration: 0.8, ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+    }
+  );
 });
-document.querySelectorAll('.phase-portfolio .reveal-r').forEach(function(el){
-  gsap.to(el,{opacity:1,x:0,duration:.7,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}});
+
+// Reveals from right
+gsap.utils.toArray('.phase-portfolio .reveal-r').forEach(function(el) {
+  gsap.fromTo(el,
+    { opacity: 0, x: 25 },
+    { opacity: 1, x: 0, duration: 0.8, ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+    }
+  );
+});
+
+// Contact social links — staggered entrance
+ScrollTrigger.batch('.sg .sl', {
+  start: 'top 90%',
+  once: true,
+  onEnter: function(batch) {
+    gsap.fromTo(batch,
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: 'power2.out' }
+    );
+  }
 });
 
 /* ═══════════════════════════════════════════════
