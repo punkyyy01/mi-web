@@ -185,7 +185,8 @@
     .photos-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
     .photo-frame{border-radius:10px;border:2px solid var(--border-soft);overflow:hidden;background:var(--card-alt);aspect-ratio:3/4;margin:0;position:relative;transition:border-color .3s,box-shadow .4s;will-change:transform,opacity}
     .photo-frame:hover{border-color:var(--accent);box-shadow:0 0 30px rgba(139,0,0,.2)}
-    .photo-frame .glow-overlay{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity .25s;border-radius:8px}
+    /* FIX #2: glow-overlay ahora tiene un background radial para que el hover sea visible */
+    .photo-frame .glow-overlay{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity .25s;border-radius:8px;background:radial-gradient(ellipse at center,rgba(139,0,0,.15) 0%,transparent 70%)}
     .photo-frame:hover .glow-overlay{opacity:1}
     .photo-frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s,filter .5s;filter:grayscale(.3) brightness(.85)}
     .photo-frame:first-child img{object-position:center 30%}
@@ -407,12 +408,14 @@
       </header>
       <div class="card-body">
         <div class="left" data-morph="left">
+          <!-- FIX #7: fetchpriority="high" acompaña loading="eager" -->
           <div class="avatar-wrap" data-morph="avatar">
-            <img src="assets/avatar.jpg" alt="Frambuesa" loading="eager">
+            <img src="assets/avatar.jpg" alt="Frambuesa" loading="eager" fetchpriority="high">
             <div class="avatar-scanline"></div>
             <div class="avatar-name"><h1 class="glitch" data-text="Frambuesa" id="cardName">Frambuesa</h1><span class="handle">@vs.8081</span></div>
           </div>
-          <div class="ekg-container" data-morph="ekg"><span class="ekg-label">PULSE</span><div class="ekg-svg"><svg viewBox="0 0 300 30" preserveAspectRatio="none"><path d="M0,15 L40,15 L50,15 L55,2 L60,28 L65,8 L70,20 L75,15 L120,15 L130,15 L135,2 L140,28 L145,8 L150,20 L155,15 L200,15 L210,15 L215,2 L220,28 L225,8 L230,20 L235,15 L300,15"/></svg></div><span class="ekg-bpm">78</span></div>
+          <!-- FIX #8: aria-hidden en SVGs decorativos -->
+          <div class="ekg-container" data-morph="ekg"><span class="ekg-label">PULSE</span><div class="ekg-svg"><svg viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0,15 L40,15 L50,15 L55,2 L60,28 L65,8 L70,20 L75,15 L120,15 L130,15 L135,2 L140,28 L145,8 L150,20 L155,15 L200,15 L210,15 L215,2 L220,28 L225,8 L230,20 L235,15 L300,15"/></svg></div><span class="ekg-bpm">78</span></div>
           <div class="identity-tags" data-morph="tags"><span class="tag" data-morph-tag="0">Bisexual</span><span class="tag" data-morph-tag="1">She / Her</span><span class="tag" data-morph-tag="2">Acuario</span><span class="tag" data-morph-tag="3">21</span></div>
           <div class="section-block" data-morph="likes"><p class="lbl">Likes</p><p class="val">Pierce the Veil, Sophie Thatcher, tocar piano a las 2am, true crime, dormir, dibujar y programar.</p></div>
           <div class="section-block" data-morph="dislikes"><p class="lbl">Dislikes</p><p class="val">La palta, madrugar, el calor, ruido innecesario, homofobia y transfobia.</p></div>
@@ -504,7 +507,8 @@
     </div>
   </section>
 
-  <div class="ekg-divider"><svg viewBox="0 0 600 30" preserveAspectRatio="none"><path d="M0,15 L80,15 L90,15 L95,2 L100,28 L105,8 L110,20 L115,15 L200,15 L210,15 L215,2 L220,28 L225,8 L230,20 L235,15 L340,15 L350,15 L355,2 L360,28 L365,8 L370,20 L375,15 L480,15 L490,15 L495,2 L500,28 L505,8 L510,20 L515,15 L600,15"/></svg></div>
+  <!-- FIX #8: aria-hidden en SVGs decorativos -->
+  <div class="ekg-divider"><svg viewBox="0 0 600 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0,15 L80,15 L90,15 L95,2 L100,28 L105,8 L110,20 L115,15 L200,15 L210,15 L215,2 L220,28 L225,8 L230,20 L235,15 L340,15 L350,15 L355,2 L360,28 L365,8 L370,20 L375,15 L480,15 L490,15 L495,2 L500,28 L505,8 L510,20 L515,15 L600,15"/></svg></div>
 
   <section class="p-projects" id="projects">
     <div class="sn reveal">02 — PROYECTOS</div>
@@ -523,7 +527,8 @@
     <div class="tech-inner">
       <div class="sn reveal">03 — TECH STACK</div>
       <h2 class="st reveal">Lo que uso<br>de verdad.</h2>
-      <div class="tech-cats" id="techCats"><button class="cp active" data-cat="all">Todo</button><button class="cp" data-cat="lang">Lenguajes</button><button class="cp" data-cat="fw">Frameworks</button><button class="cp" data-cat="db">Bases de datos</button><button class="cp" data-cat="infra">Infraestructura</button><button class="cp" data-cat="tool">Herramientas</button></div>
+      <!-- FIX #3: type="button" en todos los botones del filtro -->
+      <div class="tech-cats" id="techCats"><button type="button" class="cp active" data-cat="all">Todo</button><button type="button" class="cp" data-cat="lang">Lenguajes</button><button type="button" class="cp" data-cat="fw">Frameworks</button><button type="button" class="cp" data-cat="db">Bases de datos</button><button type="button" class="cp" data-cat="infra">Infraestructura</button><button type="button" class="cp" data-cat="tool">Herramientas</button></div>
       <div class="tech-grid" id="techGrid"></div>
     </div>
   </section>
@@ -532,7 +537,8 @@
     <div class="sn reveal">04 — MÚSICA</div>
     <h2 class="st reveal">Lo que tengo puesto<br>mientras programo.</h2>
     <div class="music-content">
-      <div class="npb reveal-l"><iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2XQgKK60UR3fOztLOTwg3A?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+      <!-- FIX: title en iframe de Spotify para accesibilidad -->
+      <div class="npb reveal-l"><iframe title="Playlist de Spotify" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2XQgKK60UR3fOztLOTwg3A?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
       <div class="mt reveal-r">
         <div class="quote">La música suena mejor de madrugada, cuando todo está en silencio.</div>
         <p>Casi siempre estoy entre Pierce the Veil, piano y recomendaciones random del algoritmo.</p>
@@ -541,7 +547,7 @@
     </div>
   </section>
 
-  <div class="ekg-divider"><svg viewBox="0 0 600 30" preserveAspectRatio="none"><path d="M0,15 L80,15 L90,15 L95,2 L100,28 L105,8 L110,20 L115,15 L200,15 L210,15 L215,2 L220,28 L225,8 L230,20 L235,15 L340,15 L350,15 L355,2 L360,28 L365,8 L370,20 L375,15 L480,15 L490,15 L495,2 L500,28 L505,8 L510,20 L515,15 L600,15"/></svg></div>
+  <div class="ekg-divider"><svg viewBox="0 0 600 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0,15 L80,15 L90,15 L95,2 L100,28 L105,8 L110,20 L115,15 L200,15 L210,15 L215,2 L220,28 L225,8 L230,20 L235,15 L340,15 L350,15 L355,2 L360,28 L365,8 L370,20 L375,15 L480,15 L490,15 L495,2 L500,28 L505,8 L510,20 L515,15 L600,15"/></svg></div>
 
   <section class="p-contact" id="contact">
     <div class="sn reveal" style="justify-content:center">05 — CONTACTO</div>
@@ -575,10 +581,11 @@ document.addEventListener('mousemove',e=>{MX=e.clientX;MY=e.clientY},{passive:tr
 /* ═══════════════════════════════════════════════
    MARQUEES
    ═══════════════════════════════════════════════ */
+/* FIX #1: marquee 1 cambiado de 3 a 2 repeticiones para loop seamless con translateX(-50%) */
 (function(){
   const t=document.getElementById('marqueeTrack');
   const items=['FRAMBUESA','SANTIAGO CL','ING. INFORMÁTICA','PIANO','TRUE CRIME','PIERCE THE VEIL','SOPHIE THATCHER','GAMING','BISEXUAL','SHE/HER','ACUARIO','CODE','DRAW','SLEEP'];
-  let h='';for(let r=0;r<3;r++)items.forEach(i=>{h+='<span>'+i+'</span><span class="sep">✦</span>';});
+  let h='';for(let r=0;r<2;r++)items.forEach(i=>{h+='<span>'+i+'</span><span class="sep">✦</span>';});
   t.innerHTML=h;
 })();
 (function(){
@@ -603,7 +610,8 @@ tsParticles.load("tsparticles",{fpsLimit:60,particles:{number:{value:22,density:
   camera.position.z=5;
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false});
   renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(1);
-  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+  /* FIX #4: window.addEventListener explícito */
+  window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
   const geo=[new THREE.IcosahedronGeometry(.5,0),new THREE.OctahedronGeometry(.4,0),new THREE.TetrahedronGeometry(.45,0),new THREE.TorusGeometry(.35,.12,6,5),new THREE.DodecahedronGeometry(.35,0)];
   const meshes=[];
   for(let i=0;i<5;i++){const mat=new THREE.MeshBasicMaterial({color:0x8b0000,wireframe:true,transparent:true,opacity:Math.random()*.18+.08});const m=new THREE.Mesh(geo[i%geo.length],mat);m.position.set((Math.random()-.5)*8,(Math.random()-.5)*6,(Math.random()-.5)*3-1);m.userData={rx:(Math.random()-.5)*.006,ry:(Math.random()-.5)*.006,fs:Math.random()*.3+.2,fa:Math.random()*.25+.1,by:m.position.y};scene.add(m);meshes.push(m);}
@@ -633,31 +641,20 @@ tsParticles.load("tsparticles",{fpsLimit:60,particles:{number:{value:22,density:
 (function(){
   const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
 
-  // Card shell appears with a soft bloom
   tl.to('.border-glow', { opacity: 1, scale: 1, duration: 0.9, ease: 'expo.out', delay: 0.15 })
-
-    // Top bars slide down naturally
     .from('.marquee-bar', { y: -12, opacity: 0, duration: 0.45 }, '-=0.45')
     .from('.titlebar', { y: -12, opacity: 0, duration: 0.4 }, '-=0.3')
-
-    // Left column cascade: avatar → ekg → tags → sections
     .from('.avatar-wrap', { opacity: 0, scale: 1.03, duration: 0.6 }, '-=0.2')
     .from('.ekg-container', { opacity: 0, x: -15, duration: 0.4 }, '-=0.35')
     .to('.tag', { opacity: 1, y: 0, duration: 0.3, stagger: 0.05 }, '-=0.2')
     .to('.section-block', { opacity: 1, y: 0, duration: 0.35, stagger: 0.08 }, '-=0.15')
     .from('.kao-deco', { opacity: 0, duration: 0.3 }, '-=0.15')
-
-    // Center column
     .to('.card-hero', { opacity: 1, y: 0, duration: 0.5 }, '-=0.4')
     .to('.info-cards', { opacity: 1, y: 0, duration: 0.45 }, '-=0.3')
     .from('.info-card', { opacity: 0, y: 8, duration: 0.3, stagger: 0.05 }, '-=0.25')
     .to('.photos-area', { opacity: 1, y: 0, duration: 0.45 }, '-=0.25')
-
-    // Right column
     .to('.sidebar', { opacity: 1, y: 0, duration: 0.5 }, '-=0.4')
     .to('.link-list a', { opacity: 1, x: 0, duration: 0.25, stagger: 0.04 }, '-=0.25')
-
-    // Footer + scroll hint
     .from('.footer-bar', { y: 8, opacity: 0, duration: 0.35 }, '-=0.15')
     .to('#scrollHint', { opacity: 1, duration: 0.6, ease: 'power1.out' }, '-=0.2');
 })();
@@ -665,7 +662,6 @@ tsParticles.load("tsparticles",{fpsLimit:60,particles:{number:{value:22,density:
 
 /* ═══════════════════════════════════════════════
    CARD → PORTFOLIO TRANSITION
-   Clean dissolve with coordinated directional fade
    ═══════════════════════════════════════════════ */
 gsap.registerPlugin(ScrollTrigger);
 
@@ -676,7 +672,6 @@ gsap.registerPlugin(ScrollTrigger);
   const pNav       = document.getElementById('pNav');
   const scrollHint = document.getElementById('scrollHint');
 
-  // All card sections in visual top-to-bottom order for a clean wave
   const cardParts = [
     '[data-morph="marquee"]',
     '[data-morph="titlebar"]',
@@ -722,11 +717,8 @@ gsap.registerPlugin(ScrollTrigger);
     }
   });
 
-  /* ── Phase A (0–0.06): Hide scroll hint ── */
   morphTL.to(scrollHint, { opacity: 0, y: 8, duration: 0.05, ease: 'power1.in' }, 0);
 
-  /* ── Phase B (0.04–0.38): Card elements dissolve in a wave ──
-       All elements fade upward in the same direction — cohesive, not chaotic */
   cardParts.forEach((el, i) => {
     morphTL.to(el, {
       opacity: 0,
@@ -736,7 +728,6 @@ gsap.registerPlugin(ScrollTrigger);
     }, 0.04 + i * 0.018);
   });
 
-  /* ── Phase C (0.35–0.50): Card shell fades out ── */
   morphTL.to(borderGlow, {
     opacity: 0,
     scale: 0.97,
@@ -744,7 +735,6 @@ gsap.registerPlugin(ScrollTrigger);
     ease: 'power2.inOut'
   }, 0.35);
 
-  /* ── Phase D (0.48–0.80): Portfolio fades in ── */
   morphTL.set(phasePort, { visibility: 'visible' }, 0.48);
 
   morphTL.fromTo(phasePort,
@@ -753,7 +743,6 @@ gsap.registerPlugin(ScrollTrigger);
     0.50
   );
 
-  // Hero elements cascade with gentle upward entrance
   morphTL.fromTo('.p-hero-label',
     { y: 25, opacity: 0 },
     { y: 0, opacity: 1, duration: 0.08, ease: 'power2.out' },
@@ -787,7 +776,6 @@ gsap.registerPlugin(ScrollTrigger);
    PORTFOLIO SCROLL REVEALS
    ═══════════════════════════════════════════════ */
 
-// Standard reveals — vertical
 gsap.utils.toArray('.phase-portfolio .reveal').forEach(function(el) {
   gsap.fromTo(el,
     { opacity: 0, y: 25 },
@@ -797,7 +785,6 @@ gsap.utils.toArray('.phase-portfolio .reveal').forEach(function(el) {
   );
 });
 
-// Reveals from left
 gsap.utils.toArray('.phase-portfolio .reveal-l').forEach(function(el) {
   gsap.fromTo(el,
     { opacity: 0, x: -25 },
@@ -807,7 +794,6 @@ gsap.utils.toArray('.phase-portfolio .reveal-l').forEach(function(el) {
   );
 });
 
-// Reveals from right
 gsap.utils.toArray('.phase-portfolio .reveal-r').forEach(function(el) {
   gsap.fromTo(el,
     { opacity: 0, x: 25 },
@@ -817,7 +803,6 @@ gsap.utils.toArray('.phase-portfolio .reveal-r').forEach(function(el) {
   );
 });
 
-// Contact social links — staggered entrance
 ScrollTrigger.batch('.sg .sl', {
   start: 'top 90%',
   once: true,
@@ -832,18 +817,20 @@ ScrollTrigger.batch('.sg .sl', {
 /* ═══════════════════════════════════════════════
    NAV SCROLL STATE
    ═══════════════════════════════════════════════ */
-(function(){const nav=document.getElementById('pNav');let t=false;window.addEventListener('scroll',function(){if(!t){requestAnimationFrame(function(){nav.classList.toggle('scrolled',scrollY>60);t=false;});t=true;}},{passive:true});})();
+/* FIX #5: window.scrollY explícito */
+(function(){const nav=document.getElementById('pNav');let t=false;window.addEventListener('scroll',function(){if(!t){requestAnimationFrame(function(){nav.classList.toggle('scrolled',window.scrollY>60);t=false;});t=true;}},{passive:true});})();
 
 /* SMOOTH NAV */
 document.querySelectorAll('.p-nav a[href^="#"]').forEach(function(a){
-  a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});
+  a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});
 });
 
 /* ═══════════════════════════════════════════════
    TECH GRID
    ═══════════════════════════════════════════════ */
+/* FIX #6: var → const/let consistente */
 (function(){
-  var techs=[
+  const techs=[
     {name:'Python',cat:'lang'},{name:'JavaScript',cat:'lang'},{name:'TypeScript',cat:'lang'},
     {name:'HTML / CSS',cat:'lang'},{name:'SQL (PLpgSQL)',cat:'lang'},{name:'Shell / Bash',cat:'lang'},
     {name:'Next.js (React)',cat:'fw'},{name:'Django',cat:'fw'},
@@ -855,13 +842,13 @@ document.querySelectorAll('.p-nav a[href^="#"]').forEach(function(a){
     {name:'Google Gemini API',cat:'tool'},{name:'Discord API',cat:'tool'},
     {name:'WhiteNoise',cat:'tool'},{name:'python-dotenv',cat:'tool'},{name:'pandas',cat:'tool'}
   ];
-  var labels={lang:'Lenguaje',fw:'Framework',db:'Base de datos',infra:'Infraestructura',tool:'Herramienta'};
-  var grid=document.getElementById('techGrid');
+  const labels={lang:'Lenguaje',fw:'Framework',db:'Base de datos',infra:'Infraestructura',tool:'Herramienta'};
+  const grid=document.getElementById('techGrid');
   function render(cat){
-    var f=cat==='all'?techs:techs.filter(function(t){return t.cat===cat;});
+    const f=cat==='all'?techs:techs.filter(function(t){return t.cat===cat;});
     grid.innerHTML='';
     f.forEach(function(t,i){
-      var d=document.createElement('div');d.className='ti';
+      const d=document.createElement('div');d.className='ti';
       d.style.opacity='0';d.style.transform='translateY(10px)';
       d.innerHTML='<div class="ti-n">'+t.name+'</div><div class="ti-c">'+labels[t.cat]+'</div>';
       grid.appendChild(d);
@@ -870,7 +857,7 @@ document.querySelectorAll('.p-nav a[href^="#"]').forEach(function(a){
   }
   render('all');
   document.getElementById('techCats').addEventListener('click',function(e){
-    var p=e.target.closest('.cp');if(!p)return;
+    const p=e.target.closest('.cp');if(!p)return;
     document.querySelectorAll('.cp').forEach(function(b){b.classList.remove('active');});
     p.classList.add('active');render(p.dataset.cat);
   });
